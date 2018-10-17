@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "6ded693a-4eab-49d0-ac45-49621336658e",
+		"name": "Leaderboard API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get leaderboard with challengeId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{URL}}/leaderboard?challengeId=30051825",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"leaderboard"
+					],
+					"query": [
+						{
+							"key": "challengeId",
+							"value": "30051825"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get leaderboard with skip and limit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{URL}}/leaderboard?challengeId=30051825&skip=1&limit=2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"leaderboard"
+					],
+					"query": [
+						{
+							"key": "challengeId",
+							"value": "30051825"
+						},
+						{
+							"key": "skip",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get leaderboard without challengeId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{URL}}/leaderboard",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"leaderboard"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
