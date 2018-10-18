@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- nodejs https://nodejs.org/en/ (v10)
+- nodejs (v10)
 - Kafka (v2)
 - Mongodb (v4)
 
