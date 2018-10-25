@@ -1,0 +1,9 @@
+version: '3'
+services:
+  leaderboard-api:
+    image: leaderboard-api:latest
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    network_mode: "host"
+
