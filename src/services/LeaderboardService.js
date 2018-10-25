@@ -11,7 +11,7 @@ const { Leaderboard } = require('../models')
  * @param {filter} Filters to be used in Database
  * @returns {Object} Leaderboard data for the given challengeId
  */
-const getLeaderboard = async (filter) => {
+async function getLeaderboard (filter) {
   return Leaderboard.find({ challengeId: filter.challengeId }, '-_id -__v')
     .sort({ aggregateScore: -1 })
     .skip(filter.skip)
