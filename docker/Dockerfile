@@ -8,4 +8,4 @@ WORKDIR /leaderboard-api
 
 # Install the dependencies from package.json
 RUN npm install
-RUN npm start
+CMD npm start
