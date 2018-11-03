@@ -3,13 +3,13 @@
  */
 
 module.exports = {
-  '/leaderboard': {
+  '/v5/leaderboard': {
     get: {
       controller: 'LeaderboardController',
       method: 'getLeaderboard'
     }
   },
-  '/health': {
+  '/v5/health': {
     get: {
       controller: 'HealthCheckController',
       method: 'checkHealth'
