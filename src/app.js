@@ -38,7 +38,7 @@ _.each(routes, (verbs, url) => {
   })
 })
 
-app.use('/', apiRouter)
+app.use('/v5/', apiRouter)
 
 app.use((err, req, res, next) => {
   logger.logFullError(err, req.signature)
