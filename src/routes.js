@@ -8,5 +8,11 @@ module.exports = {
       controller: 'LeaderboardController',
       method: 'getLeaderboard'
     }
+  },
+  '/health': {
+    get: {
+      controller: 'HealthCheckController',
+      method: 'checkHealth'
+    }
   }
 }
