@@ -1,0 +1,14 @@
+{
+    "awsdeployvar": {
+        "AWS_REPOSITORY": "leaderboard-api",
+        "AWS_ECS_CLUSTER": "leaderboard-processor",
+        "AWS_ECS_SERVICE": "leaderboard-api-svc",
+        "AWS_ECS_TASK_FAMILY": "leaderboard-api-def",
+        "AWS_ECS_CONTAINER_NAME": "leaderboard-api",
+        "AWS_ECS_PORTS": "0:80:tcp"
+    },
+    "app_var": {
+        "MONGODB_URL": "mongodb://leaderboard:appirio123@ds157223.mlab.com:57223/heroku_w1d8wnv8",
+        "PORT": "80"
+    }
+}
