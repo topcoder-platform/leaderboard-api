@@ -10,7 +10,8 @@ const LeaderboardSchema = new Schema({
   challengeId: { type: String },
   memberId: { type: String },
   handle: { type: String },
-  aggregateScore: { type: Number }
+  aggregateScore: { type: Number },
+  testsPassed: { type: Number }
 })
 
 module.exports = {
