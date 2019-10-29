@@ -6,7 +6,23 @@ module.exports = {
   '/leaderboard': {
     get: {
       controller: 'LeaderboardController',
-      method: 'getLeaderboard'
+      method: 'searchLeaderboards'
+    }
+  },
+  '/leaderboard/challenge/:challengeId/member/:memberId': {
+    post: {
+      controller: 'LeaderboardController',
+      method: 'createLeaderboard'
+    },
+    patch: {
+      controller: 'LeaderboardController',
+      method: 'updateLeaderboard'
+    }
+  },
+  '/leaderboard/reviewSummation/:reviewSummationId': {
+    delete: {
+      controller: 'LeaderboardController',
+      method: 'deleteLeaderboard'
     }
   },
   '/health': {

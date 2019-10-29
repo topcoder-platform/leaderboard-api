@@ -12,9 +12,8 @@ const LeaderboardSchema = new Schema({
   handle: { type: String },
   aggregateScore: { type: Number },
   testsPassed: { type: Number },
-  totalTestCases: { type: Number }
+  totalTestCases: { type: Number },
+  groupIds: { type: [String] }
 })
 
-module.exports = {
-  LeaderboardSchema
-}
+module.exports = LeaderboardSchema
