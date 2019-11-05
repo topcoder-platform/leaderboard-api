@@ -81,7 +81,7 @@ async function createLeaderboard (challengeId, memberId, reviewSummation) {
 
   const groupIds = challenge.groupIds
   if (!helper.isGroupIdValid(groupIds)) {
-    logger.debug(`Group ID of Challenge # ${challengeId} is not configured for processing!`)
+    logger.debug(`Group ID of Challenge # ${challengeId} is not in the configured set of Ids (${config.GROUP_IDS}) configured for processing!`)
     // Ignore the message
     return
   }
