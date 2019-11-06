@@ -28,10 +28,10 @@ async function getLeaderboard (challengeId, memberId) {
  * @returns {Number} the test passed number
  */
 function getTestsPassed (metadata) {
-  const tests = metadata.assertions || {}
+  const tests = metadata.assertions || { total: 0, pending: 0, failed: 0}
 
   let testsPassed = tests.total - tests.pending - tests.failed
-  logger.log(`${tests.total} - ${tests.pending} - ${tests.failed} == ${testsPassed}`)
+  logger.debug(`${tests.total} - ${tests.pending} - ${tests.failed} == ${testsPassed}`)
   if (!testsPassed) {
     testsPassed = 0
   }
