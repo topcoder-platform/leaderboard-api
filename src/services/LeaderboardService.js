@@ -31,7 +31,7 @@ function getTestsPassed (metadata) {
   const tests = metadata.assertions || {}
 
   let testsPassed = tests.total - tests.pending - tests.failed
-
+  logger.log(`${tests.total} - ${tests.pending} - ${tests.failed} == ${testsPassed}`)
   if (!testsPassed) {
     testsPassed = 0
   }
