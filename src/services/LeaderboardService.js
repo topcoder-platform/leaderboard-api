@@ -147,7 +147,8 @@ async function updateLeaderboard (challengeId, memberId, review) {
     reviewId: review.id,
     testsPassed,
     totalTestCases,
-    scoreLevel
+    scoreLevel,
+    status: review.status
   })
 
   return existRecords[0].save()
