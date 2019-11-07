@@ -143,6 +143,10 @@ async function updateLeaderboard (challengeId, memberId, review) {
     scoreLevel = 'up'
   }
 
+  if (existRecords[0].status === 'queued') {
+    scoreLevel = 'queued'
+  }
+
   _.assignIn(existRecords[0], {
     aggregateScore: review.score,
     reviewId: review.id,
