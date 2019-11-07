@@ -12,7 +12,7 @@ const insertData = async () => {
     challengeId: '30104644',
     memberId: '123456',
     handle: 'user1',
-    score: 100,
+    aggregateScore: 100,
     testsPassed: 10,
     totalTestCases: 10,
     groupIds: ['100', '200']
@@ -23,7 +23,7 @@ const insertData = async () => {
     challengeId: '30104644',
     memberId: '123457',
     handle: 'user2',
-    score: 90,
+    aggregateScore: 90,
     testsPassed: 9,
     totalTestCases: 10,
     groupIds: ['100', '200']
@@ -34,7 +34,7 @@ const insertData = async () => {
     challengeId: '30104644',
     memberId: '123458',
     handle: 'user3',
-    score: 80,
+    aggregateScore: 80,
     testsPassed: 8,
     totalTestCases: 10,
     groupIds: ['100', '200']
@@ -45,7 +45,7 @@ const insertData = async () => {
     challengeId: '30104645',
     memberId: '123456',
     handle: 'user1',
-    score: 40,
+    aggregateScore: 40,
     testsPassed: 8,
     totalTestCases: 20,
     groupIds: ['100', '200']
@@ -56,7 +56,7 @@ const insertData = async () => {
     challengeId: '30104645',
     memberId: '123457',
     handle: 'user2',
-    score: 50,
+    aggregateScore: 50,
     testsPassed: 10,
     totalTestCases: 20,
     groupIds: ['100', '200']
@@ -67,7 +67,7 @@ const insertData = async () => {
     challengeId: '30104646',
     memberId: '123456',
     handle: 'user1',
-    score: 190,
+    aggregateScore: 190,
     testsPassed: 4,
     totalTestCases: 6,
     groupIds: ['100']
@@ -78,7 +78,7 @@ const insertData = async () => {
     challengeId: '30104646',
     memberId: '123458',
     handle: 'user3',
-    score: 200,
+    aggregateScore: 200,
     testsPassed: 5,
     totalTestCases: 6,
     groupIds: ['100']

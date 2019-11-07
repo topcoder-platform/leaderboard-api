@@ -157,12 +157,9 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         id: '161d3655-9c80-4f90-8051-e209e8c21702',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
         metadata: {
-          assertions: {
+          tests: {
             pending: 0,
             failed: 1,
-            total: 10
-          },
-          tests: {
             total: 10
           }
         },
@@ -310,7 +307,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21707',
         score: 50
       })
-      expect(debugLogs[3]).to.equal('Group ID of Challenge # 31000000 is not configured for processing!')
+      expect(debugLogs[3]).to.equal('Group ID ([30000]) of Challenge # 31000000 is not in the configured set of Ids (202343,20000000) configured for processing!')
     })
   })
 
@@ -319,12 +316,9 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       const result = await service.updateLeaderboard('30051825', '8547899', {
         id: '361d3655-9c80-4f90-8051-e209e8c21701',
         metadata: {
-          assertions: {
+          tests: {
             pending: 0,
             failed: 1,
-            total: 5
-          },
-          tests: {
             total: 5
           }
         },
@@ -339,7 +333,8 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         handle: 'TonyJ',
         aggregateScore: 80,
         testsPassed: 4,
-        totalTestCases: 5
+        totalTestCases: 5,
+        scoreLevel: 'up'
       })
     })
 
