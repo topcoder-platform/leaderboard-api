@@ -132,13 +132,22 @@ async function updateLeaderboard (challengeId, memberId, reviewSummation) {
     throw new errors.NotFoundError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} doesn't exist`)
   }
 
+  const scoreLevel = 'na'
+
   const { testsPassed, totalTestCases } = calculateResult(reviewSummation)
+
+  if (existRecords[0].aggregateScore > reviewSummation.aggregateScore) {
+    scoreLevel = 'down';
+  } else if (existRecords[0].aggregateScore < reviewSummation.aggregateScore) {
+    scoreLevel = 'up';
+  }
 
   _.assignIn(existRecords[0], {
     aggregateScore: reviewSummation.aggregateScore,
     reviewSummationId: reviewSummation.id,
     testsPassed,
-    totalTestCases
+    totalTestCases,
+    scoreLevel
   })
 
   return existRecords[0].save()
