@@ -100,6 +100,7 @@ async function createLeaderboard (challengeId, memberId, review) {
     challengeId,
     handle: member.handle,
     aggregateScore: review.score, // For TCO scenario, we will only have 1 review - per member and per challenge
+    status: review.status,
     testsPassed,
     totalTestCases,
     groupIds: _.map(groupIds, e => String(e))
