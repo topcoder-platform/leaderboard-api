@@ -100,6 +100,7 @@ async function createLeaderboard (challengeId, memberId, review) {
     challengeId,
     handle: member.handle,
     aggregateScore: review.score, // For TCO scenario, we will only have 1 review - per member and per challenge
+    status: review.status,
     testsPassed,
     totalTestCases,
     groupIds: _.map(groupIds, e => String(e))
@@ -147,7 +148,8 @@ async function updateLeaderboard (challengeId, memberId, review) {
     reviewId: review.id,
     testsPassed,
     totalTestCases,
-    scoreLevel
+    scoreLevel,
+    status: review.status
   })
 
   return existRecords[0].save()
