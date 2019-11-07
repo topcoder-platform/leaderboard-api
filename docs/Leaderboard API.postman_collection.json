@@ -180,7 +180,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"assertions\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 10\n        },\n        \"tests\": {\n            \"total\": 10\n        }\n    },\n    \"score\": 90\n}",
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"tests\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 10\n        }\n    },\n    \"score\": 90\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -296,7 +296,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"assertions\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 5\n        },\n        \"tests\": {\n            \"total\": 5\n        }\n    },\n    \"score\": 80\n}"
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"test\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 5\n        }\n    },\n    \"score\": 80\n}"
 						},
 						"url": {
 							"raw": "{{URL}}/leaderboard/challenge/30051825/member/8547899",
