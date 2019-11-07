@@ -87,7 +87,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
       const result = res.body
       expect(result.length).to.equal(1)
       expect(result[0]).to.deep.equal({
-        reviewSummationId: '661d3655-9c80-4f90-8051-e209e8c21706',
+        reviewId: '661d3655-9c80-4f90-8051-e209e8c21706',
         submissionId: '2b5e54b9-f03c-418b-92f3-5f072b0f3bf6',
         challengeId: '30104644',
         memberId: '123458',
@@ -173,13 +173,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21701',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 0
+          score: 0
         })
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21701',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
         challengeId: '30051825',
@@ -197,22 +197,19 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
           id: '161d3655-9c80-4f90-8051-e209e8c21702',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
           metadata: {
-            assertions: {
+            tests: {
               pending: 0,
               failed: 1,
               total: 10
-            },
-            tests: {
-              total: 10
             }
           },
-          aggregateScore: 90
+          score: 90
         })
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         groupIds: [ '202343', '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21702',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21702',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
         memberId: '8547899',
         challengeId: '30051826',
@@ -235,13 +232,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
               failed: 1
             }
           },
-          aggregateScore: 0
+          score: 0
         })
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21703',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21703',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21703',
         memberId: '22688726',
         challengeId: '30051825',
@@ -259,13 +256,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
           id: '161d3655-9c80-4f90-8051-e209e8c21704',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
           metadata: { },
-          aggregateScore: 0
+          score: 0
         })
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         groupIds: [ '202343', '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21704',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21704',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
         memberId: '22688726',
         challengeId: '30051826',
@@ -282,7 +279,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21705',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21705',
-          aggregateScore: 50
+          score: 50
         })
 
       expect(res.status).to.equal(400)
@@ -295,7 +292,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21706',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21706',
-          aggregateScore: 50
+          score: 50
         })
 
       expect(res.status).to.equal(400)
@@ -308,7 +305,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21701',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 0
+          score: 0
         })
 
       expect(res.status).to.equal(409)
@@ -348,7 +345,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         })
 
       expect(res.status).to.equal(400)
-      expect(res.body.message).to.equal('"aggregateScore" is required')
+      expect(res.body.message).to.equal('"score" is required')
     })
 
     it('ignore - create leaderboard with ignored challenge', async () => {
@@ -357,10 +354,10 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21707',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21707',
-          aggregateScore: 50
+          score: 50
         })
       expect(res.status).to.equal(204)
-      expect(debugLogs[3]).to.equal('Group ID of Challenge # 31000000 is not configured for processing!')
+      expect(debugLogs[3]).to.equal('Group ID ([30000]) of Challenge # 31000000 is not in the configured set of Ids (202343,20000000) configured for processing!')
     })
   })
 
@@ -371,29 +368,27 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .send({
           id: '361d3655-9c80-4f90-8051-e209e8c21701',
           metadata: {
-            assertions: {
+            tests: {
               pending: 0,
               failed: 1,
               total: 5
-            },
-            tests: {
-              total: 5
             }
           },
-          aggregateScore: 80
+          score: 80
         })
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '361d3655-9c80-4f90-8051-e209e8c21701',
+        reviewId: '361d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
         challengeId: '30051825',
         handle: 'TonyJ',
         aggregateScore: 80,
         testsPassed: 4,
-        totalTestCases: 5
+        totalTestCases: 5,
+        scoreLevel: 'up'
       })
     })
 
@@ -402,7 +397,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         .patch('/v5/leaderboard/challenge/30051825/member/5547899')
         .send({
           id: '361d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 80
+          score: 80
         })
 
       expect(res.status).to.equal(404)
@@ -428,7 +423,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         })
 
       expect(res.status).to.equal(400)
-      expect(res.body.message).to.equal('"aggregateScore" is required')
+      expect(res.body.message).to.equal('"score" is required')
     })
   })
 
@@ -437,19 +432,19 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
 
     it('delete leaderboard success', async () => {
       const res = await chai.request(expressApp)
-        .delete(`/v5/leaderboard/reviewSummation/${id}`)
+        .delete(`/v5/leaderboard/review/${id}`)
 
       expect(res.status).to.equal(204)
-      const result = await Leaderboard.find({ reviewSummationId: id })
+      const result = await Leaderboard.find({ reviewId: id })
       expect(result.length).to.equal(0)
     })
 
     it('failure - delete leaderboard not found', async () => {
       const res = await chai.request(expressApp)
-        .delete(`/v5/leaderboard/reviewSummation/${id}`)
+        .delete(`/v5/leaderboard/review/${id}`)
 
       expect(res.status).to.equal(404)
-      expect(res.body.message).to.equal(`Leaderboard record with reviewSummation ID: ${id} doesn't exist`)
+      expect(res.body.message).to.equal(`Leaderboard record with review id: ${id} doesn't exist`)
     })
   })
 })

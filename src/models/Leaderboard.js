@@ -5,7 +5,7 @@
 const Schema = require('mongoose').Schema
 
 const LeaderboardSchema = new Schema({
-  reviewSummationId: { type: String },
+  reviewId: { type: String },
   submissionId: { type: String },
   challengeId: { type: String },
   memberId: { type: String },

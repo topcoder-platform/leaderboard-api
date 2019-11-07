@@ -28,12 +28,12 @@ async function updateLeaderboard (req, res) {
 }
 
 /**
- * Delete leaderboard detail by review summation id
+ * Delete leaderboard detail by review id
  * @param req the request
  * @param res the response
  */
 async function deleteLeaderboard (req, res) {
-  await LeaderboardService.deleteLeaderboard(req.params.reviewSummationId)
+  await LeaderboardService.deleteLeaderboard(req.params.reviewId)
   res.status(204).end()
 }
 

@@ -19,7 +19,7 @@ module.exports = {
       method: 'updateLeaderboard'
     }
   },
-  '/leaderboard/reviewSummation/:reviewSummationId': {
+  '/leaderboard/review/:reviewId': {
     delete: {
       controller: 'LeaderboardController',
       method: 'deleteLeaderboard'

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "85361413-4f1c-4fb2-9433-01dc999d7e4b",
+		"_postman_id": "adfe8d84-410e-4628-9a1c-f74e16e89c83",
 		"name": "Leaderboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -180,7 +180,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"assertions\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 10\n        },\n        \"tests\": {\n            \"total\": 10\n        }\n    },\n    \"aggregateScore\": 90\n}",
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"tests\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 10\n        }\n    },\n    \"score\": 90\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,7 +217,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"aggregateScore\": 0\n}",
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"score\": 0\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -254,7 +254,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"aggregateScore\": 0\n}",
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"submissionId\": \"261d3655-9c80-4f90-8051-e209e8c21701\",\n    \"score\": 0\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -296,7 +296,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"assertions\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 5\n        },\n        \"tests\": {\n            \"total\": 5\n        }\n    },\n    \"aggregateScore\": 80\n}"
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"metadata\": {\n        \"test\": {\n            \"pending\": 0,\n            \"failed\": 1,\n            \"total\": 5\n        }\n    },\n    \"score\": 80\n}"
 						},
 						"url": {
 							"raw": "{{URL}}/leaderboard/challenge/30051825/member/8547899",
@@ -327,7 +327,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"aggregateScore\": 80\n}"
+							"raw": "{\n\t\"id\": \"161d3655-9c80-4f90-8051-e209e8c21701\",\n    \"score\": 80\n}"
 						},
 						"url": {
 							"raw": "{{URL}}/leaderboard/challenge/30051825/member/5547899",
@@ -388,13 +388,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/leaderboard/reviewSummation/661d3655-9c80-4f90-8051-e209e8c21704",
+							"raw": "{{URL}}/leaderboard/review/661d3655-9c80-4f90-8051-e209e8c21704",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"leaderboard",
-								"reviewSummation",
+								"review",
 								"661d3655-9c80-4f90-8051-e209e8c21704"
 							]
 						}
@@ -407,13 +407,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/leaderboard/reviewSummation/231d3655-9c80-4f90-8051-e209e8c21704",
+							"raw": "{{URL}}/leaderboard/review/231d3655-9c80-4f90-8051-e209e8c21704",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"leaderboard",
-								"reviewSummation",
+								"review",
 								"231d3655-9c80-4f90-8051-e209e8c21704"
 							]
 						}

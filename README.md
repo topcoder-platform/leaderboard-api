@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- nodejs (v10)
+- Nodejs (v10)
 - Mongodb (v4)
 
 ## Configuration
@@ -54,6 +54,7 @@ npm start
 ```
 
 ## Mock API
+
 For verification purpose, we need a mock app for Topcoder Challenge API and Topcoder Member API. You can run command `npm run mock-api` to start the mock app.
 
 ## Heroku Deployment

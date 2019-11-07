@@ -7,7 +7,7 @@ module.exports = {
   PORT: process.env.PORT || 3000,
 
   MONGODB_URL: process.env.MONGODB_URL || 'mongodb://localhost:27017/leaderboardDB',
-  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v3/challenges',
+  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v4/challenges',
   MEMBER_API_URL: process.env.MEMBER_API_URL || 'https://api.topcoder-dev.com/v3/users',
 
   GROUP_IDS: process.env.GROUP_IDS || '202343,20000000', // Comma separated string of Group IDs
