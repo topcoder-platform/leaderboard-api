@@ -59,7 +59,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       const result = await service.searchLeaderboards({ challengeId: '30104644', page: 2, perPage: 2 })
       expect(result.length).to.equal(1)
       expect(_.omit(result[0]._doc, ['__v', '_id'])).to.deep.equal({
-        reviewSummationId: '661d3655-9c80-4f90-8051-e209e8c21706',
+        reviewId: '661d3655-9c80-4f90-8051-e209e8c21706',
         submissionId: '2b5e54b9-f03c-418b-92f3-5f072b0f3bf6',
         challengeId: '30104644',
         memberId: '123458',
@@ -137,11 +137,11 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       const result = await service.createLeaderboard('30051825', '8547899', {
         id: '161d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
-        aggregateScore: 0
+        score: 0
       })
       expect(_.omit(result._doc, ['__v', '_id'])).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21701',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
         challengeId: '30051825',
@@ -166,12 +166,12 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
             total: 10
           }
         },
-        aggregateScore: 90
+        score: 90
       })
 
       expect(_.omit(result._doc, ['__v', '_id'])).to.deep.equal({
         groupIds: [ '202343', '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21702',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21702',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
         memberId: '8547899',
         challengeId: '30051826',
@@ -192,12 +192,12 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
             failed: 1
           }
         },
-        aggregateScore: 0
+        score: 0
       })
 
       expect(_.omit(result._doc, ['__v', '_id'])).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21703',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21703',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21703',
         memberId: '22688726',
         challengeId: '30051825',
@@ -213,12 +213,12 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         id: '161d3655-9c80-4f90-8051-e209e8c21704',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
         metadata: { },
-        aggregateScore: 0
+        score: 0
       })
 
       expect(_.omit(result._doc, ['__v', '_id'])).to.deep.equal({
         groupIds: [ '202343', '20000000' ],
-        reviewSummationId: '161d3655-9c80-4f90-8051-e209e8c21704',
+        reviewId: '161d3655-9c80-4f90-8051-e209e8c21704',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
         memberId: '22688726',
         challengeId: '30051826',
@@ -234,7 +234,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         await service.createLeaderboard('30000001', '8547899', {
           id: '161d3655-9c80-4f90-8051-e209e8c21705',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21705',
-          aggregateScore: 50
+          score: 50
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -247,7 +247,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         await service.createLeaderboard('30051826', '10000', {
           id: '161d3655-9c80-4f90-8051-e209e8c21706',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21706',
-          aggregateScore: 50
+          score: 50
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -260,7 +260,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         await service.createLeaderboard('30051825', '8547899', {
           id: '161d3655-9c80-4f90-8051-e209e8c21701',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 0
+          score: 0
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -272,7 +272,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       try {
         await service.createLeaderboard('30051825', '8547899', {
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 0
+          score: 0
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -284,7 +284,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       try {
         await service.createLeaderboard('30051825', '8547899', {
           id: '161d3655-9c80-4f90-8051-e209e8c21707',
-          aggregateScore: 0
+          score: 0
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -300,7 +300,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         })
         throw new Error('should not throw error here')
       } catch (err) {
-        assertValidationError(err, '"aggregateScore" is required')
+        assertValidationError(err, '"score" is required')
       }
     })
 
@@ -308,7 +308,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       await service.createLeaderboard('31000000', '22688726', {
         id: '161d3655-9c80-4f90-8051-e209e8c21707',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21707',
-        aggregateScore: 50
+        score: 50
       })
       expect(debugLogs[3]).to.equal('Group ID of Challenge # 31000000 is not configured for processing!')
     })
@@ -328,11 +328,11 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
             total: 5
           }
         },
-        aggregateScore: 80
+        score: 80
       })
       expect(_.omit(result._doc, ['__v', '_id'])).to.deep.equal({
         groupIds: [ '20000000' ],
-        reviewSummationId: '361d3655-9c80-4f90-8051-e209e8c21701',
+        reviewId: '361d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
         challengeId: '30051825',
@@ -347,7 +347,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
       try {
         await service.updateLeaderboard('30051825', '5547899', {
           id: '361d3655-9c80-4f90-8051-e209e8c21701',
-          aggregateScore: 80
+          score: 80
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -358,7 +358,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
     it('failure - update leaderboard with invalid parameter 1', async () => {
       try {
         await service.updateLeaderboard('30051825', '8547899', {
-          aggregateScore: 0
+          score: 0
         })
         throw new Error('should not throw error here')
       } catch (err) {
@@ -373,7 +373,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         })
         throw new Error('should not throw error here')
       } catch (err) {
-        assertValidationError(err, '"aggregateScore" is required')
+        assertValidationError(err, '"score" is required')
       }
     })
   })
@@ -383,7 +383,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
 
     it('delete leaderboard success', async () => {
       await service.deleteLeaderboard(id)
-      const result = await Leaderboard.find({ reviewSummationId: id })
+      const result = await Leaderboard.find({ reviewId: id })
       expect(result.length).to.equal(0)
     })
 
@@ -392,7 +392,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         await service.deleteLeaderboard(id)
         throw new Error('should not throw error here')
       } catch (err) {
-        expect(err.message).to.equal(`Leaderboard record with reviewSummation ID: ${id} doesn't exist`)
+        expect(err.message).to.equal(`Leaderboard record with review id: ${id} doesn't exist`)
       }
     })
 
@@ -401,7 +401,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         await service.deleteLeaderboard()
         throw new Error('should not throw error here')
       } catch (err) {
-        assertValidationError(err, '"reviewSummationId" is required')
+        assertValidationError(err, '"reviewId" is required')
       }
     })
   })

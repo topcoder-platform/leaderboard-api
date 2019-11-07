@@ -28,7 +28,7 @@ async function getLeaderboard (challengeId, memberId) {
  * @returns {Number} the test passed number
  */
 function getTestsPassed (metadata) {
-  const tests = metadata.tests || { total: 0, pending: 0, failed: 0}
+  const tests = metadata.tests || { total: 0, pending: 0, failed: 0 }
 
   let testsPassed = tests.total - tests.pending - tests.failed
 
@@ -42,35 +42,35 @@ function getTestsPassed (metadata) {
 /**
  * Calculate test passed number and total test cases
  *
- * @param {Object} reviewSummation the review summation
+ * @param {Object} review the review
  * @return {Object} testsPassed and totalTestCases
  */
-function calculateResult (reviewSummation) {
+function calculateResult (review) {
   let testsPassed = 0
   let totalTestCases = 0
 
-  if (reviewSummation.metadata) {
-    testsPassed = getTestsPassed(reviewSummation.metadata)
-    totalTestCases = _.get(reviewSummation, 'metadata.tests.total', 0)
+  if (review.metadata) {
+    testsPassed = getTestsPassed(review.metadata)
+    totalTestCases = _.get(review, 'metadata.tests.total', 0)
   }
   return { testsPassed, totalTestCases }
 }
 
 /**
- * Create leaderboard using review summation data
+ * Create leaderboard using review data
  *
  * @param {String} challengeId the challenge id
  * @param {String} memberId the member id
- * @param {Object} reviewSummation the review summation data
+ * @param {Object} review the review data
  * @returns {Object} the created leaderboard
  */
-async function createLeaderboard (challengeId, memberId, reviewSummation) {
+async function createLeaderboard (challengeId, memberId, review) {
   const existRecords = await getLeaderboard(challengeId, memberId)
   if (existRecords.length > 0) {
     throw new errors.ConflictError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} already exists.`)
   }
 
-  const { testsPassed, totalTestCases } = calculateResult(reviewSummation)
+  const { testsPassed, totalTestCases } = calculateResult(review)
 
   const challengeDetailRes = await helper.reqToAPI(
     `${config.CHALLENGE_API_URL}?filter=id=${challengeId}`)
@@ -94,12 +94,12 @@ async function createLeaderboard (challengeId, memberId, reviewSummation) {
 
   // Record to be written into MongoDB
   const record = {
-    reviewSummationId: reviewSummation.id,
-    submissionId: reviewSummation.submissionId,
+    reviewId: review.id,
+    submissionId: review.submissionId,
     memberId,
     challengeId,
     handle: member.handle,
-    aggregateScore: reviewSummation.aggregateScore,
+    aggregateScore: review.score, // For TCO scenario, we will only have 1 review - per member and per challenge
     testsPassed,
     totalTestCases,
     groupIds: _.map(groupIds, e => String(e))
@@ -111,22 +111,22 @@ async function createLeaderboard (challengeId, memberId, reviewSummation) {
 createLeaderboard.schema = {
   challengeId: joi.string().required(),
   memberId: joi.string().required(),
-  reviewSummation: joi.object().keys({
+  review: joi.object().keys({
     id: joi.string().required(),
     submissionId: joi.string().required(),
-    aggregateScore: joi.number().required()
+    score: joi.number().required()
   }).unknown(true).required()
 }
 
 /**
- * Update leaderboard detail using review summation data
+ * Update leaderboard detail using review data
  *
  * @param {String} challengeId the challenge id
  * @param {String} memberId the member id
- * @param {Object} reviewSummation the review summation data
+ * @param {Object} review the review data
  * @returns the updated leaderboard detail
  */
-async function updateLeaderboard (challengeId, memberId, reviewSummation) {
+async function updateLeaderboard (challengeId, memberId, review) {
   const existRecords = await getLeaderboard(challengeId, memberId)
   if (existRecords.length === 0) {
     throw new errors.NotFoundError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} doesn't exist`)
@@ -134,17 +134,17 @@ async function updateLeaderboard (challengeId, memberId, reviewSummation) {
 
   let scoreLevel = 'na'
 
-  const { testsPassed, totalTestCases } = calculateResult(reviewSummation)
+  const { testsPassed, totalTestCases } = calculateResult(review)
 
-  if (existRecords[0].aggregateScore > reviewSummation.aggregateScore) {
-    scoreLevel = 'down';
-  } else if (existRecords[0].aggregateScore < reviewSummation.aggregateScore) {
-    scoreLevel = 'up';
+  if (existRecords[0].aggregateScore > review.score) {
+    scoreLevel = 'down'
+  } else if (existRecords[0].aggregateScore < review.score) {
+    scoreLevel = 'up'
   }
 
   _.assignIn(existRecords[0], {
-    aggregateScore: reviewSummation.aggregateScore,
-    reviewSummationId: reviewSummation.id,
+    aggregateScore: review.score,
+    reviewId: review.id,
     testsPassed,
     totalTestCases,
     scoreLevel
@@ -156,9 +156,9 @@ async function updateLeaderboard (challengeId, memberId, reviewSummation) {
 updateLeaderboard.schema = {
   challengeId: joi.string().required(),
   memberId: joi.string().required(),
-  reviewSummation: joi.object().keys({
+  review: joi.object().keys({
     id: joi.string().required(),
-    aggregateScore: joi.number().required()
+    score: joi.number().required()
   }).unknown(true).required()
 }
 
@@ -222,20 +222,20 @@ searchLeaderboards.schema = {
 }
 
 /**
- * Delete leaderboard by review summation id.
+ * Delete leaderboard by review id.
  *
- * @param {String} reviewSummationId the review summation id
+ * @param {String} reviewId the review id
  */
-async function deleteLeaderboard (reviewSummationId) {
-  const entity = await Leaderboard.findOne({ reviewSummationId })
+async function deleteLeaderboard (reviewId) {
+  const entity = await Leaderboard.findOne({ reviewId })
   if (!entity) {
-    throw new errors.NotFoundError(`Leaderboard record with reviewSummation ID: ${reviewSummationId} doesn't exist`)
+    throw new errors.NotFoundError(`Leaderboard record with review id: ${reviewId} doesn't exist`)
   }
   await entity.remove()
 }
 
 deleteLeaderboard.schema = {
-  reviewSummationId: joi.string().required()
+  reviewId: joi.string().required()
 }
 
 module.exports = {
