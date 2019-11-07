@@ -26,16 +26,7 @@ const getDb = (url) => {
   return dbs[url]
 }
 
-/**
- * Gets the mongoose.
- * @return    {Object}                the mongoose instance
- */
-const getMongoose = () => {
-  return mongoose
-}
-
 // exports the functions
 module.exports = {
-  getDb,
-  getMongoose
+  getDb
 }

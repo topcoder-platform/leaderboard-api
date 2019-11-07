@@ -5,6 +5,7 @@
 require('./bootstrap')
 const config = require('config')
 const express = require('express')
+const bodyParser = require('body-parser')
 const _ = require('lodash')
 const cors = require('cors')
 const httpStatus = require('http-status-codes')
@@ -18,6 +19,8 @@ const app = express()
 app.set('port', config.PORT)
 
 app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 const apiRouter = express.Router()
 
@@ -42,25 +45,42 @@ app.use('/v5/', apiRouter)
 
 app.use((err, req, res, next) => {
   logger.logFullError(err, req.signature)
-  let status = err.httpStatus || httpStatus.INTERNAL_SERVER_ERROR
-  if (err.isJoi) {
-    status = httpStatus.BAD_REQUEST
+  const errorResponse = {}
+  const status = err.isJoi ? httpStatus.BAD_REQUEST : (err.status || err.httpStatus || httpStatus.INTERNAL_SERVER_ERROR)
+
+  if (_.isArray(err.details)) {
+    if (err.isJoi) {
+      _.map(err.details, (e) => {
+        if (e.message) {
+          if (_.isUndefined(errorResponse.message)) {
+            errorResponse.message = e.message
+          } else {
+            errorResponse.message += `, ${e.message}`
+          }
+        }
+      })
+    }
   }
-  res.status(status)
-  if (err.isJoi) {
-    res.json({
-      error: err.details[0].message
-    })
-  } else {
-    res.json({
-      error: err.message
-    })
+
+  if (err.response) {
+    // extract error message from V3 API
+    errorResponse.message = _.get(err, 'response.body.result.content')
   }
+
+  if (_.isUndefined(errorResponse.message)) {
+    if (err.message && status !== httpStatus.INTERNAL_SERVER_ERROR) {
+      errorResponse.message = err.message
+    } else {
+      errorResponse.message = 'Internal server error'
+    }
+  }
+
+  res.status(status).json(errorResponse)
 })
 
 // Check if the route is not found or HTTP method is not supported
 app.use('*', (req, res) => {
-  const route = routes[req.baseUrl]
+  const route = routes[req.baseUrl.substring(3)]
   if (route) {
     res.status(httpStatus.METHOD_NOT_ALLOWED).json({ message: 'The requested HTTP method is not supported.' })
   } else {
