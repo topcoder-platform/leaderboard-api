@@ -132,7 +132,7 @@ async function updateLeaderboard (challengeId, memberId, reviewSummation) {
     throw new errors.NotFoundError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} doesn't exist`)
   }
 
-  const scoreLevel = 'na'
+  let scoreLevel = 'na'
 
   const { testsPassed, totalTestCases } = calculateResult(reviewSummation)
 
