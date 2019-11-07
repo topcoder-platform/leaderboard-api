@@ -12,6 +12,7 @@ const LeaderboardSchema = new Schema({
   handle: { type: String },
   aggregateScore: { type: Number },
   testsPassed: { type: Number },
+  scoreLevel: { type: String },
   totalTestCases: { type: Number },
   groupIds: { type: [String] }
 })
