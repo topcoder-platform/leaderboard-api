@@ -198,13 +198,15 @@ async function searchLeaderboards (filter) {
           totalTests: 0,
           totalTestsPassed: 0,
           memberId: e.memberId,
-          memberHandle: e.handle
+          memberHandle: e.handle,
+          reviews: []
         })
       }
       map.get(e.memberId).finalAggregationScore += e.aggregateScore
       map.get(e.memberId).totalTestsPassed += e.testsPassed
       map.get(e.memberId).totalTests += e.totalTestCases
       map.get(e.memberId).numberOfChallenges += 1
+      map.get(e.memberId).reviews.push(e)
     })
     const result = Array.from(map.values())
     _.each(result, e => {
