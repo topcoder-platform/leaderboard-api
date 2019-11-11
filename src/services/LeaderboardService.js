@@ -65,6 +65,7 @@ function calculateResult (review) {
  * @returns {Object} the created leaderboard
  */
 async function createLeaderboard (challengeId, memberId, review) {
+  let scoreLevel = ''
   const existRecords = await getLeaderboard(challengeId, memberId)
   if (existRecords.length > 0) {
     throw new errors.ConflictError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} already exists.`)
@@ -92,6 +93,10 @@ async function createLeaderboard (challengeId, memberId, review) {
     throw new errors.BadRequestError(`Member # ${memberId} doesn't exist`)
   }
 
+  if (review.status === 'queued') {
+    scoreLevel = 'queued'
+  }
+
   // Record to be written into MongoDB
   const record = {
     reviewId: review.id,
@@ -103,6 +108,7 @@ async function createLeaderboard (challengeId, memberId, review) {
     status: review.status,
     testsPassed,
     totalTestCases,
+    scoreLevel,
     groupIds: _.map(groupIds, e => String(e))
   }
 
@@ -133,17 +139,17 @@ async function updateLeaderboard (challengeId, memberId, review) {
     throw new errors.NotFoundError(`Leaderboard record with challenge # ${challengeId} and member # ${memberId} doesn't exist`)
   }
 
-  let scoreLevel = 'na'
+  let scoreLevel = ''
 
   const { testsPassed, totalTestCases } = calculateResult(review)
 
-  if (existRecords[0].aggregateScore > review.score) {
-    scoreLevel = 'down'
-  } else if (existRecords[0].aggregateScore < review.score) {
-    scoreLevel = 'up'
-  }
-
-  if (existRecords[0].status === 'queued') {
+  if (review.status !== 'queued') {
+    if (existRecords[0].aggregateScore > review.score) {
+      scoreLevel = 'down'
+    } else if (existRecords[0].aggregateScore < review.score) {
+      scoreLevel = 'up'
+    }
+  } else {
     scoreLevel = 'queued'
   }
 
