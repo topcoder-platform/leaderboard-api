@@ -15,7 +15,7 @@ const LeaderboardSchema = new Schema({
   scoreLevel: { type: String },
   totalTestCases: { type: Number },
   groupIds: { type: [String] },
-  status: { type: [String] }
+  status: { type: String }
 })
 
 module.exports = LeaderboardSchema
