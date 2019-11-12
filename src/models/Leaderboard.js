@@ -13,6 +13,7 @@ const LeaderboardSchema = new Schema({
   aggregateScore: { type: Number },
   testsPassed: { type: Number },
   scoreLevel: { type: String },
+  scoreResetTime: { type: Number },
   totalTestCases: { type: Number },
   groupIds: { type: [String] },
   status: { type: String }

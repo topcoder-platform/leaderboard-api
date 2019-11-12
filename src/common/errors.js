@@ -33,5 +33,7 @@ function createError (name, statusCode) {
 module.exports = {
   BadRequestError: createError('BadRequestError', 400),
   NotFoundError: createError('NotFoundError', 404),
+  ForbiddenError: createError('ForbiddenError', 403),
+  UnauthorizedError: createError('UnauthorizedError', 401),
   ConflictError: createError('ConflictError', 409)
 }
