@@ -12,6 +12,42 @@ const httpStatus = require('http-status-codes')
 const helper = require('./common/helper')
 const logger = require('./common/logger')
 const routes = require('./routes')
+const errors = require('./common/errors')
+const authenticator = require('tc-core-library-js').middleware.jwtAuthenticator
+
+const leaderboardService = require('./services/LeaderboardService')
+
+/**
+ * Checks if the source matches the term.
+ *
+ * @param {Array} source the array in which to search for the term
+ * @param {Array | String} term the term to search
+ */
+function checkIfExists (source, term) {
+  let terms
+
+  if (!_.isArray(source)) {
+    throw new Error('Source argument should be an array')
+  }
+
+  source = source.map(s => s.toLowerCase())
+
+  if (_.isString(term)) {
+    terms = term.split(' ')
+  } else if (_.isArray(term)) {
+    terms = term.map(t => t.toLowerCase())
+  } else {
+    throw new Error('Term argument should be either a string or an array')
+  }
+
+  for (let i = 0; i < terms.length; i++) {
+    if (source.includes(terms[i])) {
+      return true
+    }
+  }
+
+  return false
+}
 
 // setup express app
 const app = express()
@@ -36,6 +72,35 @@ _.each(routes, (verbs, url) => {
       req.signature = `${def.controller}#${def.method}`
       next()
     })
+
+    // Authentication and Authorization
+    if (def.auth === 'jwt') {
+      actions.push((req, res, next) => {
+        authenticator(_.pick(config, ['AUTH_SECRET', 'VALID_ISSUERS']))(req, res, next)
+      })
+
+      actions.push((req, res, next) => {
+        if (!req.authUser) {
+          return next(new errors.UnauthorizedError('Action is not allowed for invalid token'))
+        }
+
+        if (req.authUser.scopes) {
+          // M2M
+          if (def.scopes && !checkIfExists(def.scopes, req.authUser.scopes)) {
+            res.forbidden = true
+            next(new errors.ForbiddenError('You are not allowed to perform this action!'))
+          } else {
+            next()
+          }
+        } else if ((_.isArray(def.access) && def.access.length > 0) ||
+          (_.isArray(def.scopes) && def.scopes.length > 0)) {
+          next(new errors.UnauthorizedError('You are not authorized to perform this action'))
+        } else {
+          next()
+        }
+      })
+    }
+
     actions.push(method)
     apiRouter[verb](url, helper.autoWrapExpress(actions))
   })
@@ -89,6 +154,8 @@ app.use('*', (req, res) => {
 })
 
 if (!module.parent) {
+  logger.info(`Reloading incomplete resets...`)
+  leaderboardService.resetIncompleteScoreLevels()
   app.listen(app.get('port'), () => {
     logger.info(`Express server listening on port ${app.get('port')}`)
   })

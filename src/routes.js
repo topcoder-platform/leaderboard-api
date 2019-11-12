@@ -2,6 +2,8 @@
  * The application API routes
  */
 
+const constants = require('../app-constants')
+
 module.exports = {
   '/leaderboard': {
     get: {
@@ -12,17 +14,23 @@ module.exports = {
   '/leaderboard/challenge/:challengeId/member/:memberId': {
     post: {
       controller: 'LeaderboardController',
-      method: 'createLeaderboard'
+      method: 'createLeaderboard',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardCreate, constants.Scopes.LeaderboardAll]
     },
     patch: {
       controller: 'LeaderboardController',
-      method: 'updateLeaderboard'
+      method: 'updateLeaderboard',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardUpdate, constants.Scopes.LeaderboardAll]
     }
   },
   '/leaderboard/review/:reviewId': {
     delete: {
       controller: 'LeaderboardController',
-      method: 'deleteLeaderboard'
+      method: 'deleteLeaderboard',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardDelete, constants.Scopes.LeaderboardAll]
     }
   },
   '/health': {

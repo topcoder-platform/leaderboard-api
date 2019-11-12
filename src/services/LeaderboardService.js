@@ -10,6 +10,8 @@ const logger = require('../common/logger')
 const errors = require('../common/errors')
 const { Leaderboard } = require('../models')
 
+const timers = {}
+
 /**
  * Get leaderboard detail by challenge id and member id
  *
@@ -126,6 +128,60 @@ createLeaderboard.schema = {
 }
 
 /**
+ * If the app gets restarted, this function will handle incomplete resets
+ */
+async function resetIncompleteScoreLevels () {
+  // find records where scoreLevel doesn't equal ('' and 'queued') and scoreResetTime doesn't equal null
+  const existRecords = await Leaderboard.find({
+    $and: [
+      { $and: [{ scoreLevel: { $ne: '' } }, { scoreLevel: { $ne: 'queued' } }] },
+      { scoreResetTime: { $ne: null } }
+    ]
+  })
+  _.forEach(existRecords, (record) => {
+    const currentTime = Date.now()
+    // if reset time already passed, reset immediately
+    // otherwise wait for the necessary time
+    if (currentTime >= record.scoreResetTime) {
+      resetScoreLevel(record)
+    } else {
+      const timerKey = `${record.challengeId}:${record.memberId}`
+      timers[timerKey] = setTimeout(resetScoreLevel, record.scoreResetTime - currentTime, record)
+    }
+  })
+}
+
+/**
+ * Resets the scoreLevel back to an empty string
+ * Resets the scoreResetTime to null
+ *
+ * @param {Object} record Mongoose record
+ */
+async function resetScoreLevel (record) {
+  _.assignIn(record, {
+    scoreLevel: '',
+    scoreResetTime: null
+  })
+  record.save()
+  const timerKey = `${record.challengeId}:${record.memberId}`
+  delete timers[timerKey]
+}
+
+/**
+ * Resets the scoreLevel back to an empty string
+ * Resets the scoreResetTime to null
+ *
+ * @param {String} challengeId the challenge id
+ * @param {String} memberId the member id
+ */
+async function resetScoreLevelWithMemberInfo (challengeId, memberId) {
+  const existRecords = await getLeaderboard(challengeId, memberId)
+  if (existRecords.length > 0) {
+    resetScoreLevel(existRecords[0])
+  }
+}
+
+/**
  * Update leaderboard detail using review data
  *
  * @param {String} challengeId the challenge id
@@ -140,14 +196,29 @@ async function updateLeaderboard (challengeId, memberId, review) {
   }
 
   let scoreLevel = ''
+  // when the score should be reset - incomplete timers will be reloaded on restart
+  let scoreResetTime = null
 
   const { testsPassed, totalTestCases } = calculateResult(review)
+
+  let scoreLevelChanged = false
 
   if (review.status !== 'queued') {
     if (existRecords[0].aggregateScore > review.score) {
       scoreLevel = 'down'
+      scoreLevelChanged = true
     } else if (existRecords[0].aggregateScore < review.score) {
       scoreLevel = 'up'
+      scoreLevelChanged = true
+    }
+
+    if (scoreLevelChanged) {
+      const timerKey = `${challengeId}:${memberId}`
+      // if we got a new review for the same challengeId:memberId, reset the timer
+      clearTimeout(timers[timerKey])
+      // resets the score after an amount of time
+      timers[timerKey] = setTimeout(resetScoreLevelWithMemberInfo, config.SCORE_RESET_TIME, challengeId, memberId)
+      scoreResetTime = Date.now() + config.SCORE_RESET_TIME
     }
   } else {
     scoreLevel = 'queued'
@@ -159,6 +230,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
     testsPassed,
     totalTestCases,
     scoreLevel,
+    scoreResetTime,
     status: review.status
   })
 
@@ -256,7 +328,8 @@ module.exports = {
   createLeaderboard,
   updateLeaderboard,
   searchLeaderboards,
-  deleteLeaderboard
+  deleteLeaderboard,
+  resetIncompleteScoreLevels
 }
 
 logger.buildService(module.exports)
