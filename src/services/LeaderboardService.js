@@ -11,6 +11,7 @@ const errors = require('../common/errors')
 const { Leaderboard } = require('../models')
 
 const timers = {}
+const challengesInGroups = {}
 
 /**
  * Get leaderboard detail by challenge id and member id
@@ -266,6 +267,16 @@ async function searchLeaderboards (filter) {
       .skip((filter.page - 1) * filter.perPage)
       .limit(filter.perPage)
   } else if (filter.groupId) {
+    let count
+    if (challengesInGroups[filter.groupId]) {
+      count = challengesInGroups[filter.groupId]
+    } else {
+      const challengeDetailRes = await helper.reqToAPI(
+        `${config.CHALLENGE_API_URL}?filter=groupIds=${filter.groupId}`)
+      count = _.get(challengeDetailRes, 'body.result.content', ['prevent divide by zero']).length
+      // cache the count since Challenge API is too slow
+      challengesInGroups[filter.groupId] = count
+    }
     const leaderboards = await Leaderboard.find({ groupIds: filter.groupId })
     const map = new Map()
     _.each(leaderboards, e => {
@@ -288,7 +299,7 @@ async function searchLeaderboards (filter) {
     })
     const result = Array.from(map.values())
     _.each(result, e => {
-      e.finalAggregationScore = e.finalAggregationScore / e.numberOfChallenges
+      e.finalAggregationScore = e.finalAggregationScore / count
     })
     result.sort((a, b) => b.finalAggregationScore - a.finalAggregationScore)
     return result.slice((filter.page - 1) * filter.perPage, filter.page * filter.perPage)
