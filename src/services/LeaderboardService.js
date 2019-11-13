@@ -203,37 +203,47 @@ async function updateLeaderboard (challengeId, memberId, review) {
 
   let scoreLevelChanged = false
 
-  if (review.status !== 'queued') {
-    if (existRecords[0].aggregateScore > review.score) {
-      scoreLevel = 'down'
-      scoreLevelChanged = true
-    } else if (existRecords[0].aggregateScore < review.score) {
-      scoreLevel = 'up'
-      scoreLevelChanged = true
-    }
-
-    if (scoreLevelChanged) {
-      const timerKey = `${challengeId}:${memberId}`
-      // if we got a new review for the same challengeId:memberId, reset the timer
-      clearTimeout(timers[timerKey])
-      // resets the score after an amount of time
-      timers[timerKey] = setTimeout(resetScoreLevelWithMemberInfo, config.SCORE_RESET_TIME, challengeId, memberId)
-      scoreResetTime = Date.now() + config.SCORE_RESET_TIME
-    }
+  if (review.resource === 'reviewSummation') {
+    _.assignIn(existRecords[0], {
+      finalDetails: {
+        aggregateScore: review.aggregateScore,
+        testsPassed,
+        totalTestCases,  
+      }
+    })
   } else {
-    scoreLevel = 'queued'
+    if (review.status !== 'queued') {
+      if (existRecords[0].aggregateScore > review.score) {
+        scoreLevel = 'down'
+        scoreLevelChanged = true
+      } else if (existRecords[0].aggregateScore < review.score) {
+        scoreLevel = 'up'
+        scoreLevelChanged = true
+      }
+  
+      if (scoreLevelChanged) {
+        const timerKey = `${challengeId}:${memberId}`
+        // if we got a new review for the same challengeId:memberId, reset the timer
+        clearTimeout(timers[timerKey])
+        // resets the score after an amount of time
+        timers[timerKey] = setTimeout(resetScoreLevelWithMemberInfo, config.SCORE_RESET_TIME, challengeId, memberId)
+        scoreResetTime = Date.now() + config.SCORE_RESET_TIME
+      }
+    } else {
+      scoreLevel = 'queued'
+    }
+  
+    _.assignIn(existRecords[0], {
+      aggregateScore: review.score,
+      reviewId: review.id,
+      testsPassed,
+      totalTestCases,
+      scoreLevel,
+      scoreResetTime,
+      status: review.status
+    })
   }
-
-  _.assignIn(existRecords[0], {
-    aggregateScore: review.score,
-    reviewId: review.id,
-    testsPassed,
-    totalTestCases,
-    scoreLevel,
-    scoreResetTime,
-    status: review.status
-  })
-
+  
   return existRecords[0].save()
 }
 
