@@ -76,21 +76,21 @@ async function createLeaderboard (challengeId, memberId, review) {
   const { testsPassed, totalTestCases } = calculateResult(review)
 
   const challengeDetailRes = await helper.reqToAPI(
-    `${config.CHALLENGE_API_URL}?filter=id=${challengeId}`)
-  const challenge = _.get(challengeDetailRes, 'body.result.content[0]')
+    `${config.CHALLENGE_API_URL}?legacyId=${challengeId}`)
+  const challenge = _.get(challengeDetailRes, 'body[0]')
   if (!challenge) {
     throw new errors.BadRequestError(`Challenge # ${challengeId} doesn't exist`)
   }
 
-  const groupIds = challenge.groupIds
+  const groupIds = challenge.groups
   if (!helper.isGroupIdValid(groupIds)) {
     logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} is not in the configured set of Ids (${config.GROUP_IDS}) configured for processing!`)
     // Ignore the message
     return
   }
 
-  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?filter=id=${memberId}`)
-  const member = _.get(memberDetailRes, 'body.result.content[0]')
+  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?userId=${memberId}&fields=userId,handle`)
+  const member = _.get(memberDetailRes, 'body[0]')
   if (!member) {
     throw new errors.BadRequestError(`Member # ${memberId} doesn't exist`)
   }
@@ -203,37 +203,47 @@ async function updateLeaderboard (challengeId, memberId, review) {
 
   let scoreLevelChanged = false
 
-  if (review.status !== 'queued') {
-    if (existRecords[0].aggregateScore > review.score) {
-      scoreLevel = 'down'
-      scoreLevelChanged = true
-    } else if (existRecords[0].aggregateScore < review.score) {
-      scoreLevel = 'up'
-      scoreLevelChanged = true
-    }
-
-    if (scoreLevelChanged) {
-      const timerKey = `${challengeId}:${memberId}`
-      // if we got a new review for the same challengeId:memberId, reset the timer
-      clearTimeout(timers[timerKey])
-      // resets the score after an amount of time
-      timers[timerKey] = setTimeout(resetScoreLevelWithMemberInfo, config.SCORE_RESET_TIME, challengeId, memberId)
-      scoreResetTime = Date.now() + config.SCORE_RESET_TIME
-    }
+  if (review.resource === 'reviewSummation') {
+    _.assignIn(existRecords[0], {
+      finalDetails: {
+        aggregateScore: review.aggregateScore,
+        testsPassed,
+        totalTestCases,  
+      }
+    })
   } else {
-    scoreLevel = 'queued'
+    if (review.status !== 'queued') {
+      if (existRecords[0].aggregateScore > review.score) {
+        scoreLevel = 'down'
+        scoreLevelChanged = true
+      } else if (existRecords[0].aggregateScore < review.score) {
+        scoreLevel = 'up'
+        scoreLevelChanged = true
+      }
+  
+      if (scoreLevelChanged) {
+        const timerKey = `${challengeId}:${memberId}`
+        // if we got a new review for the same challengeId:memberId, reset the timer
+        clearTimeout(timers[timerKey])
+        // resets the score after an amount of time
+        timers[timerKey] = setTimeout(resetScoreLevelWithMemberInfo, config.SCORE_RESET_TIME, challengeId, memberId)
+        scoreResetTime = Date.now() + config.SCORE_RESET_TIME
+      }
+    } else {
+      scoreLevel = 'queued'
+    }
+  
+    _.assignIn(existRecords[0], {
+      aggregateScore: review.score,
+      reviewId: review.id,
+      testsPassed,
+      totalTestCases,
+      scoreLevel,
+      scoreResetTime,
+      status: review.status
+    })
   }
-
-  _.assignIn(existRecords[0], {
-    aggregateScore: review.score,
-    reviewId: review.id,
-    testsPassed,
-    totalTestCases,
-    scoreLevel,
-    scoreResetTime,
-    status: review.status
-  })
-
+  
   return existRecords[0].save()
 }
 
