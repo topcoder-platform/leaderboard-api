@@ -89,8 +89,8 @@ async function createLeaderboard (challengeId, memberId, review) {
     return
   }
 
-  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?filter=id=${memberId}`)
-  const member = _.get(memberDetailRes, 'body.result.content[0]')
+  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?userId=${memberId}&fields=userId,handle`)
+  const member = _.get(memberDetailRes, 'body[0]')
   if (!member) {
     throw new errors.BadRequestError(`Member # ${memberId} doesn't exist`)
   }
