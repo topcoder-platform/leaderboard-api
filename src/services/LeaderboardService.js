@@ -76,13 +76,13 @@ async function createLeaderboard (challengeId, memberId, review) {
   const { testsPassed, totalTestCases } = calculateResult(review)
 
   const challengeDetailRes = await helper.reqToAPI(
-    `${config.CHALLENGE_API_URL}?filter=id=${challengeId}`)
-  const challenge = _.get(challengeDetailRes, 'body.result.content[0]')
+    `${config.CHALLENGE_API_URL}?legacyId=${challengeId}`)
+  const challenge = _.get(challengeDetailRes, 'body[0]')
   if (!challenge) {
     throw new errors.BadRequestError(`Challenge # ${challengeId} doesn't exist`)
   }
 
-  const groupIds = challenge.groupIds
+  const groupIds = challenge.groups
   if (!helper.isGroupIdValid(groupIds)) {
     logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} is not in the configured set of Ids (${config.GROUP_IDS}) configured for processing!`)
     // Ignore the message

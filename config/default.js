@@ -10,7 +10,7 @@ module.exports = {
     : '["https://topcoder-dev.auth0.com/", "https://api.topcoder.com"]',
 
   MONGODB_URL: process.env.MONGODB_URL || 'mongodb://localhost:27017/leaderboardDB',
-  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v4/challenges',
+  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v5/challenges',
   MEMBER_API_URL: process.env.MEMBER_API_URL || 'https://api.topcoder-dev.com/v3/users',
 
   GROUP_IDS: process.env.GROUP_IDS || '202343,20000000', // Comma separated string of Group IDs,
