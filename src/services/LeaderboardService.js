@@ -76,21 +76,21 @@ async function createLeaderboard (challengeId, memberId, review) {
   const { testsPassed, totalTestCases } = calculateResult(review)
 
   const challengeDetailRes = await helper.reqToAPI(
-    `${config.CHALLENGE_API_URL}?filter=id=${challengeId}`)
-  const challenge = _.get(challengeDetailRes, 'body.result.content[0]')
+    `${config.CHALLENGE_API_URL}?legacyId=${challengeId}`)
+  const challenge = _.get(challengeDetailRes, 'body[0]')
   if (!challenge) {
     throw new errors.BadRequestError(`Challenge # ${challengeId} doesn't exist`)
   }
 
-  const groupIds = challenge.groupIds
+  const groupIds = challenge.groups
   if (!(await helper.isGroupIdValid(groupIds))) {
-    logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} does not exist`)
+    logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} is not in the approved list. Ignoring request`)
     // Ignore the message
     return
   }
 
-  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?filter=id=${memberId}`)
-  const member = _.get(memberDetailRes, 'body.result.content[0]')
+  const memberDetailRes = await helper.reqToAPI(`${config.MEMBER_API_URL}?userId=${memberId}&fields=userId,handle`)
+  const member = _.get(memberDetailRes, 'body[0]')
   if (!member) {
     throw new errors.BadRequestError(`Member # ${memberId} doesn't exist`)
   }

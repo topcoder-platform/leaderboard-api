@@ -9,8 +9,8 @@ module.exports = {
   VALID_ISSUERS: process.env.VALID_ISSUERS ? process.env.VALID_ISSUERS.replace(/\\"/g, '')
     : '["https://topcoder-dev.auth0.com/", "https://api.topcoder.com"]',
 
-  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v4/challenges',
-  MEMBER_API_URL: process.env.MEMBER_API_URL || 'https://api.topcoder-dev.com/v3/users',
+  CHALLENGE_API_URL: process.env.CHALLENGE_API_URL || 'https://api.topcoder-dev.com/v5/challenges',
+  MEMBER_API_URL: process.env.MEMBER_API_URL || 'https://api.topcoder-dev.com/v5/members',
 
   SCORE_RESET_TIME: process.env.SCORE_RESET_TIME || 10000, // 10 seconds default
 

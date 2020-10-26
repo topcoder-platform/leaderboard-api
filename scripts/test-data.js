@@ -83,7 +83,7 @@ const insertData = async () => {
     totalTestCases: 6,
     groupIds: ['100']
   })
-  for (const groupId of [202343, 20000000, 100, 200]) {
+  for (const groupId of ['202343', '20000000', '100', '200']) {
     await Group.create({
       groupId
     })

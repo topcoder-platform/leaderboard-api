@@ -312,7 +312,7 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21707',
         score: 50
       })
-      expect(debugLogs[3]).to.equal('Group ID ([30000]) of Challenge # 31000000 does not exist')
+      expect(debugLogs[3]).to.equal('Group ID (["30000"]) of Challenge # 31000000 is not in the approved list. Ignoring request')
     })
   })
 
@@ -411,20 +411,20 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
   describe('search groups test', async () => {
     it('search groups success', async () => {
       const result = await GroupService.searchGroups()
-      expect(result).to.eql([202343, 100, 200, 20000000])
+      expect(result).to.eql(['202343', '100', '20000000', '200'])
     })
   })
 
   describe('create group test', async () => {
     it('create group success', async () => {
-      const groupId = 300
+      const groupId = '300'
       const result = await GroupService.createGroup(groupId)
       expect(result.groupId).to.equal(groupId)
       const groups = await GroupService.searchGroups()
       expect(groups).to.contain(groupId)
     })
     it('failure - group wth specified groupId already exist', async () => {
-      const groupId = 300
+      const groupId = '300'
       try {
         await GroupService.createGroup(groupId)
         throw new Error('should not throw error here')
@@ -436,13 +436,13 @@ describe('Topcoder - Leaderboard API Unit Tests', () => {
 
   describe('delete group test', async () => {
     it('delete group success', async () => {
-      const groupId = 300
+      const groupId = '300'
       await GroupService.deleteGroup(groupId)
       const groups = await GroupService.searchGroups()
       expect(groups).to.not.contain(groupId)
     })
     it('failure - group with specified groupId does not exist', async () => {
-      const groupId = 300
+      const groupId = '300'
       try {
         await GroupService.deleteGroup(groupId)
         throw new Error('should not throw error here')

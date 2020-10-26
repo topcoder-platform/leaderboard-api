@@ -9,7 +9,7 @@ const Schema = dynamoose.Schema
 
 const GroupSchema = new Schema({
   groupId: {
-    type: Number,
+    type: String,
     hashKey: true
   }
 }, {

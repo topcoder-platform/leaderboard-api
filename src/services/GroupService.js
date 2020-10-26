@@ -29,7 +29,7 @@ async function createGroup (groupId) {
 }
 
 createGroup.schema = {
-  groupId: joi.id().required()
+  groupId: joi.string().required()
 }
 
 /**
@@ -45,7 +45,7 @@ async function deleteGroup (groupId) {
 }
 
 deleteGroup.schema = {
-  groupId: joi.id().required()
+  groupId: joi.string().required()
 }
 
 module.exports = {

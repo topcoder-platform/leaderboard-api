@@ -18,7 +18,7 @@ const m2m = m2mAuth(_.pick(config, ['AUTH0_URL', 'AUTH0_AUDIENCE', 'TOKEN_CACHE_
 const isGroupIdValid = async (groupIds) => {
   // Get the Group IDs from config
   const confGroupIds = _.map(await models.Group.scan().all().exec(), (group) => group.groupId)
-  if (_.intersectionBy(confGroupIds, groupIds, parseInt).length !== 0) {
+  if (_.intersection(confGroupIds, groupIds).length !== 0) {
     return true
   }
   return false

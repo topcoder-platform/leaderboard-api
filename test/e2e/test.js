@@ -374,7 +374,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
           score: 50
         })
       expect(res.status).to.equal(204)
-      expect(debugLogs[3]).to.equal('Group ID ([30000]) of Challenge # 31000000 does not exist')
+      expect(debugLogs[3]).to.equal('Group ID (["30000"]) of Challenge # 31000000 is not in the approved list. Ignoring request')
     })
   })
 
@@ -477,13 +477,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
       const res = await chai.request(expressApp)
         .get(`/v5/leaderboard/groups`)
       expect(res.status).to.equal(200)
-      expect(res.body).to.eql([202343, 100, 200, 20000000])
+      expect(res.body).to.eql(['202343', '100', '20000000', '200'])
     })
   })
 
   describe('create group test', async () => {
     it('create group success', async () => {
-      const groupId = 300
+      const groupId = '300'
       const res = await chai.request(expressApp)
         .post(`/v5/leaderboard/groups/${groupId}`)
         .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
@@ -491,7 +491,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
       expect(res.body).to.eql({ groupId })
     })
     it('failure - group wth specified groupId already exist', async () => {
-      const groupId = 300
+      const groupId = '300'
       const res = await chai.request(expressApp)
         .post(`/v5/leaderboard/groups/${groupId}`)
         .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
@@ -502,14 +502,14 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
 
   describe('delete group test', async () => {
     it('delete group success', async () => {
-      const groupId = 300
+      const groupId = '300'
       const res = await chai.request(expressApp)
         .delete(`/v5/leaderboard/groups/${groupId}`)
         .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
       expect(res.status).to.equal(204)
     })
     it('failure - group with specified groupId does not exist', async () => {
-      const groupId = 300
+      const groupId = '300'
       const res = await chai.request(expressApp)
         .delete(`/v5/leaderboard/groups/${groupId}`)
         .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
