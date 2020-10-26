@@ -5,6 +5,7 @@
 const _ = require('lodash')
 const config = require('config')
 const request = require('superagent')
+const models = require('../models')
 const m2mAuth = require('tc-core-library-js').auth.m2m
 
 const m2m = m2mAuth(_.pick(config, ['AUTH0_URL', 'AUTH0_AUDIENCE', 'TOKEN_CACHE_TIME', 'AUTH0_PROXY_SERVER_URL']))
@@ -14,10 +15,10 @@ const m2m = m2mAuth(_.pick(config, ['AUTH0_URL', 'AUTH0_AUDIENCE', 'TOKEN_CACHE_
  * @param {String []} groupIds Array of group ID
  * @returns {Boolean} True if any one of the Group ID is present in config
  */
-const isGroupIdValid = (groupIds) => {
+const isGroupIdValid = async (groupIds) => {
   // Get the Group IDs from config
-  const confGroupIds = config.GROUP_IDS.split(',')
-  if (_.intersectionBy(confGroupIds, groupIds).length !== 0) {
+  const confGroupIds = _.map(await models.Group.scan().all().exec(), (group) => group.groupId)
+  if (_.intersection(confGroupIds, groupIds).length !== 0) {
     return true
   }
   return false

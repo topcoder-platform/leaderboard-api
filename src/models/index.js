@@ -1,28 +1,38 @@
 /**
- * Initialize MongoDB models
+ * Initialize DynamoDB models
  */
 
+const config = require('config')
+const dynamoose = require('dynamoose')
 const fs = require('fs')
 const path = require('path')
-const config = require('config')
-const db = require('../datasource').getDb(config.MONGODB_URL)
-const models = {}
 
-// Bootstrap models
+const awsConfig = {
+  region: config.AMAZON.AWS_REGION
+}
+if (config.AMAZON.AWS_ACCESS_KEY_ID && config.AMAZON.AWS_SECRET_ACCESS_KEY) {
+  awsConfig.accessKeyId = config.AMAZON.AWS_ACCESS_KEY_ID
+  awsConfig.secretAccessKey = config.AMAZON.AWS_SECRET_ACCESS_KEY
+}
+dynamoose.aws.sdk.config.update(awsConfig)
+
+if (config.AMAZON.IS_LOCAL_DB) {
+  dynamoose.aws.ddb.local(config.AMAZON.DYNAMODB_URL)
+}
+
+dynamoose.model.defaults.set({
+  create: false,
+  update: false,
+  waitForActive: false
+})
+
+const models = {}
 fs.readdirSync(__dirname).forEach((file) => {
   if (file !== 'index.js') {
     const filename = file.split('.')[0]
     const schema = require(path.join(__dirname, filename))
-    const model = db.model(filename, schema)
+    const model = dynamoose.model(filename, schema)
     models[filename] = model
-
-    model.schema.options.toJSON = {
-      transform: (doc, ret) => {
-        delete ret._id
-        delete ret.__v
-        return ret
-      }
-    }
   }
 })
 

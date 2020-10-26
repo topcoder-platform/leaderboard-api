@@ -1,27 +1,34 @@
 /**
- * Health Check Controller
+ * Controller for health check endpoint
  */
-
 const config = require('config')
-const db = require('../datasource').getDb(config.MONGODB_URL)
+const models = require('../models')
+const uuid = require('uuid')
+const errors = require('../common/errors')
+
+// the topcoder-healthcheck-dropin library returns checksRun count,
+// here it follows that to return such count
+let checksRun = 0
+const randomReviewId = uuid.v4()
 
 /**
- * Check for health of the app
- * @param req the request
- * @param res the response
+ * Check health of the app
+ * @param {Object} req the request
+ * @param {Object} res the response
  */
 async function checkHealth (req, res) {
-  if (db.readyState === 1) {
-    res.status(200).json({
-      checksRun: 1
+  // perform a quick database access operation, if there is no error and is quick, then consider it healthy
+  checksRun += 1
+  await models.Leaderboard.query({ reviewId: randomReviewId }).limit(1).exec()
+    .timeout(config.HEALTH_CHECK_TIMEOUT)
+    .catch((e) => {
+      if (e.name === 'TimeoutError') {
+        throw new errors.ServiceUnavailableError('Database operation is slow.')
+      }
+      throw new errors.ServiceUnavailableError(`There is database operation error, ${e.message}`)
     })
-
-    return
-  }
-
-  res.status(503).json({
-    checksRun: 1
-  })
+  // there is no error, and it is quick, then return checks run count
+  res.send({ checksRun })
 }
 
 module.exports = {

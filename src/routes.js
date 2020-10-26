@@ -33,6 +33,26 @@ module.exports = {
       scopes: [constants.Scopes.LeaderboardDelete, constants.Scopes.LeaderboardAll]
     }
   },
+  '/leaderboard/groups': {
+    get: {
+      controller: 'GroupController',
+      method: 'searchGroups'
+    }
+  },
+  '/leaderboard/groups/:groupId': {
+    post: {
+      controller: 'GroupController',
+      method: 'createGroup',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardCreate, constants.Scopes.LeaderboardAll]
+    },
+    delete: {
+      controller: 'GroupController',
+      method: 'deleteGroup',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardDelete, constants.Scopes.LeaderboardAll]
+    }
+  },
   '/health': {
     get: {
       controller: 'HealthCheckController',

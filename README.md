@@ -3,7 +3,7 @@
 ## Dependencies
 
 - Nodejs (v10)
-- Mongodb (v4)
+- AWS DynamoDB
 
 ## Configuration
 
@@ -12,16 +12,26 @@ The following parameters can be set in config files or in env variables:
 
 - LOG_LEVEL: the log level
 - PORT: the server port
-- MONGODB_URL: Mongo DB URL
 - CHALLENGE_API_URL: the Topcoder challenge API URL
 - MEMBER_API_URL: the Topcoder member API URL
-- GROUP_IDS: the valid group ids
 - AUTH0_URL: Auth0 URL, used to get TC M2M token
 - AUTH0_AUDIENCE: Auth0 audience, used to get TC M2M token
 - TOKEN_CACHE_TIME: Auth0 token cache time, used to get TC M2M token
 - AUTH0_CLIENT_ID: Auth0 client id, used to get TC M2M token
 - AUTH0_CLIENT_SECRET: Auth0 client secret, used to get TC M2M token
 - AUTH0_PROXY_SERVER_URL: Proxy Auth0 URL, used to get TC M2M token
+- AMAZON.AWS_ACCESS_KEY_ID: The Amazon certificate key to use when connecting. For local dynamodb you can set fake value.
+- AMAZON.AWS_SECRET_ACCESS_KEY: The Amazon certificate access key to use when connecting. For local dynamodb you can set fake value.
+- AMAZON.AWS_REGION: The Amazon region to use when connecting. For local dynamodb you can set fake value.
+- AMAZON.DYNAMODB_READ_CAPACITY_UNITS: the AWS DynamoDB read capacity units
+- AMAZON.DYNAMODB_WRITE_CAPACITY_UNITS: the AWS DynamoDB write capacity units
+- AMAZON.IS_LOCAL_DB: Use local or AWS Amazon DynamoDB
+- AMAZON.DYNAMODB_URL: The local url, if using local Amazon DynamoDB
+- HEALTH_CHECK_TIMEOUT: health check timeout in milliseconds
+
+## Local DynamoDB
+Change to the ./docker-dynamodb directory and run `docker-compose up`.
+An instance of DynamoDB listening on port `8000` will be initialized inside docker.
 
 ## Local deployment
 
@@ -37,6 +47,12 @@ npm i
 npm run lint
 
 npm run lint:fix # To fix possible lint errors
+```
+
+- Make sure DynamoDB instance is up and create tables
+
+```bash
+npm run create-tables
 ```
 
 - Clear and Insert data into database
@@ -57,16 +73,8 @@ npm start
 
 For verification purpose, we need a mock app for Topcoder Challenge API and Topcoder Member API. You can run command `npm run mock-api` to start the mock app.
 
-## Heroku Deployment
-
-- git init
-- git add .
-- git commit -m init
-- heroku create
-- heroku config:set MONGODB_URL=...
-- git push heroku master
-
 ## Verification
+First of all, ensure you have started local DynamoDB and created tables.
 
 ### Tests
 
@@ -90,7 +98,7 @@ npm run e2e
 npm run mock-api
 ```
 
-- Ensure you have start MongoDB and properly configure `MONGODB_URL`. Run the following commands to clear and insert test data, step up environment variables and start the app.
+- Run the following commands clear and insert test data, step up environment variables and start the app.
 
 ```bash
 npm run init-db

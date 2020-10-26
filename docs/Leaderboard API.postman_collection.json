@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "adfe8d84-410e-4628-9a1c-f74e16e89c83",
+		"_postman_id": "5595d7da-5a7f-4bff-932c-ab639907c9eb",
 		"name": "Leaderboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -173,8 +173,12 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{M2M_TOKEN}}",
 								"type": "text"
 							}
 						],
@@ -210,9 +214,13 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -247,9 +255,13 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -292,6 +304,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -321,8 +338,13 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -352,8 +374,13 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -386,7 +413,18 @@
 					"name": "delete leaderboard",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{URL}}/leaderboard/review/661d3655-9c80-4f90-8051-e209e8c21704",
 							"host": [
@@ -405,7 +443,18 @@
 					"name": "delete leaderboard 404",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{URL}}/leaderboard/review/231d3655-9c80-4f90-8051-e209e8c21704",
 							"host": [
@@ -415,6 +464,186 @@
 								"leaderboard",
 								"review",
 								"231d3655-9c80-4f90-8051-e209e8c21704"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "search groups",
+			"item": [
+				{
+					"name": "search groups success",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/leaderboard/groups",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"leaderboard",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "create group",
+			"item": [
+				{
+					"name": "create group success",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": " Bearer {{M2M_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/leaderboard/groups/:groupId",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"leaderboard",
+								"groups",
+								":groupId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "300"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create group with duplicated groupId 409",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": " Bearer {{M2M_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/leaderboard/groups/:groupId",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"leaderboard",
+								"groups",
+								":groupId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "delete group",
+			"item": [
+				{
+					"name": "delete group success",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": " Bearer {{M2M_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/leaderboard/groups/:groupId",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"leaderboard",
+								"groups",
+								":groupId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete group non-exist 404",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": " Bearer {{M2M_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/leaderboard/groups/:groupId",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"leaderboard",
+								"groups",
+								":groupId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "1000"
+								}
 							]
 						}
 					},
