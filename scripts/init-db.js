@@ -1,15 +1,20 @@
 /**
  * Initialize database tables. All data will be cleared.
  */
-require('./bootstrap')
-const { Leaderboard } = require('./models')
-const logger = require('./common/logger')
+require('../src/bootstrap')
+const models = require('../src/models')
+const logger = require('../src/common/logger')
 
 logger.info('Initialize database tables.')
 
 const initDB = async () => {
   // clear data
-  await Leaderboard.deleteMany({})
+  for (const model of Object.values(models)) {
+    const entities = await model.scan().all().exec()
+    for (const item of entities) {
+      await model.delete(item)
+    }
+  }
 }
 
 if (!module.parent) {

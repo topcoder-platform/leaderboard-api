@@ -4,13 +4,13 @@
 
 const nock = require('nock')
 const prepare = require('mocha-prepare')
-const { challengeAPIResponse, memberAPIResponse } = require('./testData')
+const { challengeAPIResponse, memberAPIResponse, M2M_FULL_TOKEN } = require('./testData')
 
 prepare(function (done) {
   nock(/\.com/)
     .persist()
     .post('/oauth/token')
-    .reply(200, { access_token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJUb3Bjb2RlciBVc2VyIiwiQ29ubmVjdCBTdXBwb3J0IiwiYWRtaW5pc3RyYXRvciIsInRlc3RSb2xlIiwiYWFhIiwidG9ueV90ZXN0XzEiLCJDb25uZWN0IE1hbmFnZXIiLCJDb25uZWN0IEFkbWluIiwiY29waWxvdCIsIkNvbm5lY3QgQ29waWxvdCBNYW5hZ2VyIl0sImlzcyI6Imh0dHBzOi8vYXBpLnRvcGNvZGVyLWRldi5jb20iLCJoYW5kbGUiOiJUb255SiIsImV4cCI6MTU2NTY4MTkyMCwidXNlcklkIjoiODU0Nzg5OSIsImlhdCI6MTU1NTY4MTMyMCwiZW1haWwiOiJhamVmdHNAdG9wY29kZXIuY29tIiwianRpIjoiMTlhMDkzNzAtMjk4OC00N2I4LTkxODktMGRhODVjNjM0ZWQyIn0.V8nsQpbzQ_4iEd0dAbuYsfeydnhSAEQ95AKKwl8RONw' })
+    .reply(200, { access_token: M2M_FULL_TOKEN })
     .get('/v4/challenges?filter=id=30000001')
     .reply(200, challengeAPIResponse[0])
     .get('/v4/challenges?filter=id=30051825')
