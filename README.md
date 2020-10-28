@@ -12,6 +12,7 @@ The following parameters can be set in config files or in env variables:
 
 - LOG_LEVEL: the log level
 - PORT: the server port
+- API_VERSION: the API version
 - CHALLENGE_API_URL: the Topcoder challenge API URL
 - MEMBER_API_URL: the Topcoder member API URL
 - AUTH0_URL: Auth0 URL, used to get TC M2M token
