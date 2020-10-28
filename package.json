@@ -37,6 +37,7 @@
     "joi": "^14.0.0",
     "lodash": "^4.17.19",
     "superagent": "^5.1.0",
+    "tc-bus-api-wrapper": "github:topcoder-platform/tc-bus-api-wrapper",
     "tc-core-library-js": "appirio-tech/tc-core-library-js.git#v2.6.3",
     "uuid": "^8.3.1",
     "winston": "^3.1.0"

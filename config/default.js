@@ -31,5 +31,13 @@ module.exports = {
     // Below configuration is required if IS_LOCAL_DB is true
     DYNAMODB_URL: process.env.DYNAMODB_URL || 'http://localhost:8000'
   },
-  HEALTH_CHECK_TIMEOUT: process.env.HEALTH_CHECK_TIMEOUT || 3000
+  HEALTH_CHECK_TIMEOUT: process.env.HEALTH_CHECK_TIMEOUT || 3000,
+
+  BUSAPI_URL: process.env.BUSAPI_URL || 'https://api.topcoder-dev.com/v5',
+  KAFKA_ERROR_TOPIC: process.env.KAFKA_ERROR_TOPIC || 'common.error.reporting',
+  KAFKA_MESSAGE_ORIGINATOR: process.env.KAFKA_MESSAGE_ORIGINATOR || 'leaderboard-api',
+  LEADERBOARD_CREATE_TOPIC: process.env.LEADERBOARD_CREATE_TOPIC || 'leaderboard.action.create',
+  LEADERBOARD_UPDATE_TOPIC: process.env.LEADERBOARD_UPDATE_TOPIC || 'leaderboard.action.update',
+  LEADERBOARD_DELETE_TOPIC: process.env.LEADERBOARD_DELETE_TOPIC || 'leaderboard.action.delete',
+  LEADERBOARD_AGGREGATE_TOPIC: process.env.LEADERBOARD_AGGREGATE_TOPIC || 'leaderboard.action.aggregate'
 }

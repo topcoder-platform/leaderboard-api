@@ -28,6 +28,13 @@ The following parameters can be set in config files or in env variables:
 - AMAZON.IS_LOCAL_DB: Use local or AWS Amazon DynamoDB
 - AMAZON.DYNAMODB_URL: The local url, if using local Amazon DynamoDB
 - HEALTH_CHECK_TIMEOUT: health check timeout in milliseconds
+- BUSAPI_URL: Topcoder Bus API URL
+- KAFKA_ERROR_TOPIC: The error topic at which bus api will publish any errors
+- KAFKA_MESSAGE_ORIGINATOR: The originator value for the kafka messages
+- LEADERBOARD_CREATE_TOPIC: Kafka topic for create message
+- LEADERBOARD_UPDATE_TOPIC: Kafka topic for update message
+- LEADERBOARD_DELETE_TOPIC: Kafka topic for delete message
+- LEADERBOARD_AGGREGATE_TOPIC: Kafka topic that is used to combine all create, update and delete message(s)
 
 ## Local DynamoDB
 Change to the ./docker-dynamodb directory and run `docker-compose up`.

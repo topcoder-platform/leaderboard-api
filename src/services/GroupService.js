@@ -3,6 +3,7 @@
  */
 const _ = require('lodash')
 const joi = require('joi')
+const helper = require('../common/helper')
 const logger = require('../common/logger')
 const errors = require('../common/errors')
 const { Group } = require('../models')
@@ -25,7 +26,15 @@ async function createGroup (groupId) {
   if (entity) {
     throw new errors.ConflictError(`groupId # ${groupId} already exists.`)
   }
-  return Group.create({ groupId })
+
+  const dbEntity = await Group.create({ groupId })
+  try {
+    await helper.publishMessage('create', 'group', { groupId })
+  } catch (err) {
+    logger.logFullError(err)
+  }
+
+  return dbEntity
 }
 
 createGroup.schema = {
@@ -42,6 +51,11 @@ async function deleteGroup (groupId) {
     throw new errors.NotFoundError(`groupId # ${groupId} doesn't exist`)
   }
   await Group.delete(entity)
+  try {
+    await helper.publishMessage('create', 'group', { groupId })
+  } catch (err) {
+    logger.logFullError(err)
+  }
 }
 
 deleteGroup.schema = {
