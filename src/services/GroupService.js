@@ -52,7 +52,7 @@ async function deleteGroup (groupId) {
   }
   await Group.delete(entity)
   try {
-    await helper.publishMessage('create', 'group', { groupId })
+    await helper.publishMessage('delete', 'group', { groupId })
   } catch (err) {
     logger.logFullError(err)
   }
