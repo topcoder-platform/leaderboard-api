@@ -114,7 +114,14 @@ async function createLeaderboard (challengeId, memberId, review) {
     groupIds: _.map(groupIds, e => String(e))
   }
 
-  return Leaderboard.create(record)
+  const dbEntity = await Leaderboard.create(record)
+  try {
+    await helper.publishMessage('create', 'leaderboard', record)
+  } catch (err) {
+    logger.logFullError(err)
+  }
+
+  return dbEntity
 }
 
 createLeaderboard.schema = {
@@ -244,7 +251,14 @@ async function updateLeaderboard (challengeId, memberId, review) {
     })
   }
 
-  return existRecords[0].save()
+  const dbEntity = await existRecords[0].save()
+  try {
+    await helper.publishMessage('update', 'leaderboard', existRecords[0])
+  } catch (err) {
+    logger.logFullError(err)
+  }
+
+  return dbEntity
 }
 
 updateLeaderboard.schema = {
@@ -326,6 +340,12 @@ async function deleteLeaderboard (reviewId) {
     throw new errors.NotFoundError(`Leaderboard record with review id: ${reviewId} doesn't exist`)
   }
   await Leaderboard.delete(entity)
+
+  try {
+    await helper.publishMessage('delete', 'leaderboard', { reviewId })
+  } catch (err) {
+    logger.logFullError(err)
+  }
 }
 
 deleteLeaderboard.schema = {
