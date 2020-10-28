@@ -31,7 +31,7 @@ fs.readdirSync(__dirname).forEach((file) => {
   if (file !== 'index.js') {
     const filename = file.split('.')[0]
     const schema = require(path.join(__dirname, filename))
-    const model = dynamoose.model(filename, schema)
+    const model = dynamoose.model(`leaderboard_${filename}`, schema)
     models[filename] = model
   }
 })
