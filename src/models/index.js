@@ -7,14 +7,11 @@ const dynamoose = require('dynamoose')
 const fs = require('fs')
 const path = require('path')
 
-const awsConfig = {
+dynamoose.aws.sdk.config.update({
+  accessKeyId: config.AMAZON.AWS_ACCESS_KEY_ID,
+  secretAccessKey: config.AMAZON.AWS_SECRET_ACCESS_KEY,
   region: config.AMAZON.AWS_REGION
-}
-if (config.AMAZON.AWS_ACCESS_KEY_ID && config.AMAZON.AWS_SECRET_ACCESS_KEY) {
-  awsConfig.accessKeyId = config.AMAZON.AWS_ACCESS_KEY_ID
-  awsConfig.secretAccessKey = config.AMAZON.AWS_SECRET_ACCESS_KEY
-}
-dynamoose.aws.sdk.config.update(awsConfig)
+})
 
 if (config.AMAZON.IS_LOCAL_DB) {
   dynamoose.aws.ddb.local(config.AMAZON.DYNAMODB_URL)
