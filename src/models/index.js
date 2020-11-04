@@ -8,8 +8,8 @@ const fs = require('fs')
 const path = require('path')
 
 dynamoose.aws.sdk.config.update({
-  accessKeyId: config.AMAZON.AWS_ACCESS_KEY_ID,
-  secretAccessKey: config.AMAZON.AWS_SECRET_ACCESS_KEY,
+//  accessKeyId: config.AMAZON.AWS_ACCESS_KEY_ID,
+//  secretAccessKey: config.AMAZON.AWS_SECRET_ACCESS_KEY,
   region: config.AMAZON.AWS_REGION
 })
 
