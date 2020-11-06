@@ -35,5 +35,6 @@ module.exports = {
   NotFoundError: createError('NotFoundError', 404),
   ForbiddenError: createError('ForbiddenError', 403),
   UnauthorizedError: createError('UnauthorizedError', 401),
-  ConflictError: createError('ConflictError', 409)
+  ConflictError: createError('ConflictError', 409),
+  ServiceUnavailableError: createError('ServiceUnavailableError', 503)
 }

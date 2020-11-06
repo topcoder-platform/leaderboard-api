@@ -5,13 +5,15 @@
 process.env.NODE_ENV = 'test'
 require('../../src/bootstrap')
 const chai = require('chai')
+const _ = require('lodash')
 const expect = require('chai').expect
 const chaiHttp = require('chai-http')
 const logger = require('../../src/common/logger')
-const { initDB } = require('../../src/init-db')
-const { insertData } = require('../../src/test-data')
+const { initDB } = require('../../scripts/init-db')
+const { insertData } = require('../../scripts/test-data')
 const { Leaderboard } = require('../../src/models')
 const { expressApp } = require('../../src/app')
+const { M2M_FULL_TOKEN } = require('../common/testData')
 
 chai.use(chaiHttp)
 
@@ -106,25 +108,25 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
       expect(res.status).to.equal(200)
       const result = res.body
       expect(result.length).to.equal(3)
-      expect(result[0]).to.deep.equal({
-        numberOfChallenges: 2,
-        finalAggregationScore: 140,
-        totalTests: 16,
-        totalTestsPassed: 13,
-        memberId: '123458',
-        memberHandle: 'user3'
-      })
-      expect(result[1]).to.deep.equal({
+      expect(result[0]).to.contain({
         numberOfChallenges: 3,
-        finalAggregationScore: 110,
+        finalAggregationScore: 330,
         totalTests: 36,
         totalTestsPassed: 22,
         memberId: '123456',
         memberHandle: 'user1'
       })
-      expect(result[2]).to.deep.equal({
+      expect(result[1]).to.contain({
         numberOfChallenges: 2,
-        finalAggregationScore: 70,
+        finalAggregationScore: 280,
+        totalTests: 16,
+        totalTestsPassed: 13,
+        memberId: '123458',
+        memberHandle: 'user3'
+      })
+      expect(result[2]).to.contain({
+        numberOfChallenges: 2,
+        finalAggregationScore: 140,
         totalTests: 30,
         totalTestsPassed: 19,
         memberId: '123457',
@@ -139,13 +141,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
       expect(res.status).to.equal(200)
       const result = res.body
       expect(result.length).to.equal(1)
-      expect(result[0]).to.deep.equal({
-        numberOfChallenges: 1,
-        finalAggregationScore: 80,
-        totalTests: 10,
-        totalTestsPassed: 8,
-        memberId: '123458',
-        memberHandle: 'user3'
+      expect(result[0]).to.contain({
+        numberOfChallenges: 2,
+        finalAggregationScore: 140,
+        totalTests: 30,
+        totalTestsPassed: 18,
+        memberId: '123456',
+        memberHandle: 'user1'
       })
     })
 
@@ -170,6 +172,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('create leaderboard success 1', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21701',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
@@ -183,6 +186,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
         challengeId: '30051825',
+        scoreLevel: '',
         handle: 'TonyJ',
         aggregateScore: 0,
         testsPassed: 0,
@@ -193,6 +197,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('create leaderboard success 2', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051826/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21702',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
@@ -213,6 +218,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21702',
         memberId: '8547899',
         challengeId: '30051826',
+        scoreLevel: '',
         handle: 'TonyJ',
         aggregateScore: 90,
         testsPassed: 9,
@@ -223,6 +229,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('create leaderboard with invalid metadata 1', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/22688726')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21703',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21703',
@@ -242,6 +249,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21703',
         memberId: '22688726',
         challengeId: '30051825',
+        scoreLevel: '',
         handle: 'vasyl',
         aggregateScore: 0,
         testsPassed: 0,
@@ -252,6 +260,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('create leaderboard with invalid metadata 2', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051826/member/22688726')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21704',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
@@ -266,6 +275,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21704',
         memberId: '22688726',
         challengeId: '30051826',
+        scoreLevel: '',
         handle: 'vasyl',
         aggregateScore: 0,
         testsPassed: 0,
@@ -276,6 +286,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard with incorrect challenge', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30000001/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21705',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21705',
@@ -289,6 +300,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard with incorrect member', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051826/member/10000')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21706',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21706',
@@ -302,6 +314,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard already exists', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21701',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
@@ -315,6 +328,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard with invalid parameter 1', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
           aggregateScore: 0
@@ -327,6 +341,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard with invalid parameter 2', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21707',
           aggregateScore: 0
@@ -339,6 +354,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - create leaderboard with invalid parameter 3', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21707',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21701'
@@ -351,13 +367,14 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('ignore - create leaderboard with ignored challenge', async () => {
       const res = await chai.request(expressApp)
         .post('/v5/leaderboard/challenge/31000000/member/22688726')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21707',
           submissionId: '261d3655-9c80-4f90-8051-e209e8c21707',
           score: 50
         })
       expect(res.status).to.equal(204)
-      expect(debugLogs[3]).to.equal('Group ID ([30000]) of Challenge # 31000000 is not in the configured set of Ids (202343,20000000) configured for processing!')
+      expect(debugLogs[3]).to.equal('Group ID (["30000"]) of Challenge # 31000000 is not in the approved list. Ignoring request')
     })
   })
 
@@ -365,6 +382,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('update leaderboard success', async () => {
       const res = await chai.request(expressApp)
         .patch('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '361d3655-9c80-4f90-8051-e209e8c21701',
           metadata: {
@@ -378,8 +396,8 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         })
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({
-        groupIds: [ '20000000' ],
+      expect(res.body).to.deep.contain({
+        groupIds: ['20000000'],
         reviewId: '361d3655-9c80-4f90-8051-e209e8c21701',
         submissionId: '261d3655-9c80-4f90-8051-e209e8c21701',
         memberId: '8547899',
@@ -390,11 +408,13 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
         totalTestCases: 5,
         scoreLevel: 'up'
       })
+      expect(_.isNumber(res.body.scoreResetTime)).to.equal(true)
     })
 
     it('failure - update leaderboard not found', async () => {
       const res = await chai.request(expressApp)
         .patch('/v5/leaderboard/challenge/30051825/member/5547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '361d3655-9c80-4f90-8051-e209e8c21701',
           score: 80
@@ -407,6 +427,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - update leaderboard with invalid parameter 1', async () => {
       const res = await chai.request(expressApp)
         .patch('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           aggregateScore: 0
         })
@@ -418,6 +439,7 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('failure - update leaderboard with invalid parameter 2', async () => {
       const res = await chai.request(expressApp)
         .patch('/v5/leaderboard/challenge/30051825/member/8547899')
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
         .send({
           id: '161d3655-9c80-4f90-8051-e209e8c21707'
         })
@@ -433,18 +455,66 @@ describe('Topcoder - Leaderboard API E2E Tests', () => {
     it('delete leaderboard success', async () => {
       const res = await chai.request(expressApp)
         .delete(`/v5/leaderboard/review/${id}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
 
       expect(res.status).to.equal(204)
-      const result = await Leaderboard.find({ reviewId: id })
+      const result = await Leaderboard.query({ reviewId: id }).exec()
       expect(result.length).to.equal(0)
     })
 
     it('failure - delete leaderboard not found', async () => {
       const res = await chai.request(expressApp)
         .delete(`/v5/leaderboard/review/${id}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
 
       expect(res.status).to.equal(404)
       expect(res.body.message).to.equal(`Leaderboard record with review id: ${id} doesn't exist`)
+    })
+  })
+
+  describe('search groups test', async () => {
+    it('search groups success', async () => {
+      const res = await chai.request(expressApp)
+        .get(`/v5/leaderboard/groups`)
+      expect(res.status).to.equal(200)
+      expect(res.body).to.eql(['202343', '100', '20000000', '200'])
+    })
+  })
+
+  describe('create group test', async () => {
+    it('create group success', async () => {
+      const groupId = '300'
+      const res = await chai.request(expressApp)
+        .post(`/v5/leaderboard/groups/${groupId}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
+      expect(res.status).to.equal(200)
+      expect(res.body).to.eql({ groupId })
+    })
+    it('failure - group wth specified groupId already exist', async () => {
+      const groupId = '300'
+      const res = await chai.request(expressApp)
+        .post(`/v5/leaderboard/groups/${groupId}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
+      expect(res.status).to.equal(409)
+      expect(res.body).to.eql({ message: `groupId # ${groupId} already exists.` })
+    })
+  })
+
+  describe('delete group test', async () => {
+    it('delete group success', async () => {
+      const groupId = '300'
+      const res = await chai.request(expressApp)
+        .delete(`/v5/leaderboard/groups/${groupId}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
+      expect(res.status).to.equal(204)
+    })
+    it('failure - group with specified groupId does not exist', async () => {
+      const groupId = '300'
+      const res = await chai.request(expressApp)
+        .delete(`/v5/leaderboard/groups/${groupId}`)
+        .set('Authorization', `Bearer ${M2M_FULL_TOKEN}`)
+      expect(res.status).to.equal(404)
+      expect(res.body).to.eql({ message: `groupId # ${groupId} doesn't exist` })
     })
   })
 })

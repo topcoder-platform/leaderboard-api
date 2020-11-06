@@ -5,13 +5,13 @@
 const constants = require('../app-constants')
 
 module.exports = {
-  '/leaderboard': {
+  '/leaderboards': {
     get: {
       controller: 'LeaderboardController',
       method: 'searchLeaderboards'
     }
   },
-  '/leaderboard/challenge/:challengeId/member/:memberId': {
+  '/leaderboards/challenge/:challengeId/member/:memberId': {
     post: {
       controller: 'LeaderboardController',
       method: 'createLeaderboard',
@@ -25,10 +25,30 @@ module.exports = {
       scopes: [constants.Scopes.LeaderboardUpdate, constants.Scopes.LeaderboardAll]
     }
   },
-  '/leaderboard/review/:reviewId': {
+  '/leaderboards/review/:reviewId': {
     delete: {
       controller: 'LeaderboardController',
       method: 'deleteLeaderboard',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardDelete, constants.Scopes.LeaderboardAll]
+    }
+  },
+  '/leaderboards/groups': {
+    get: {
+      controller: 'GroupController',
+      method: 'searchGroups'
+    }
+  },
+  '/leaderboards/groups/:groupId': {
+    post: {
+      controller: 'GroupController',
+      method: 'createGroup',
+      auth: 'jwt',
+      scopes: [constants.Scopes.LeaderboardCreate, constants.Scopes.LeaderboardAll]
+    },
+    delete: {
+      controller: 'GroupController',
+      method: 'deleteGroup',
       auth: 'jwt',
       scopes: [constants.Scopes.LeaderboardDelete, constants.Scopes.LeaderboardAll]
     }

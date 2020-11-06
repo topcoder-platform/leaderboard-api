@@ -58,8 +58,6 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const apiRouter = express.Router()
-
 // load all routes
 _.each(routes, (verbs, url) => {
   _.each(verbs, (def, verb) => {
@@ -102,11 +100,9 @@ _.each(routes, (verbs, url) => {
     }
 
     actions.push(method)
-    apiRouter[verb](url, helper.autoWrapExpress(actions))
+    app[verb](`${config.API_VERSION}${url}`, helper.autoWrapExpress(actions))
   })
 })
-
-app.use('/v5/', apiRouter)
 
 app.use((err, req, res, next) => {
   logger.logFullError(err, req.signature)

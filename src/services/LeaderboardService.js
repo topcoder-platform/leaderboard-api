@@ -20,7 +20,7 @@ const timers = {}
  * @returns {Object} the leaderboard detail
  */
 async function getLeaderboard (challengeId, memberId) {
-  return Leaderboard.find({ $and: [{ challengeId }, { memberId }] })
+  return Leaderboard.query({ challengeId, memberId }).exec()
 }
 
 /**
@@ -83,8 +83,8 @@ async function createLeaderboard (challengeId, memberId, review) {
   }
 
   const groupIds = challenge.groups
-  if (!helper.isGroupIdValid(groupIds)) {
-    logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} is not in the configured set of Ids (${config.GROUP_IDS}) configured for processing!`)
+  if (!(await helper.isGroupIdValid(groupIds))) {
+    logger.debug(`Group ID (${JSON.stringify(groupIds)}) of Challenge # ${challengeId} is not in the approved list. Ignoring request`)
     // Ignore the message
     return
   }
@@ -99,7 +99,7 @@ async function createLeaderboard (challengeId, memberId, review) {
     scoreLevel = 'queued'
   }
 
-  // Record to be written into MongoDB
+  // Record to be written into DynamoDB
   const record = {
     reviewId: review.id,
     submissionId: review.submissionId,
@@ -114,7 +114,14 @@ async function createLeaderboard (challengeId, memberId, review) {
     groupIds: _.map(groupIds, e => String(e))
   }
 
-  return Leaderboard.create(record)
+  const dbEntity = await Leaderboard.create(record)
+  try {
+    await helper.publishMessage('create', 'leaderboard', record)
+  } catch (err) {
+    logger.logFullError(err)
+  }
+
+  return dbEntity
 }
 
 createLeaderboard.schema = {
@@ -127,17 +134,17 @@ createLeaderboard.schema = {
   }).unknown(true).required()
 }
 
+/* istanbul ignore next */
 /**
  * If the app gets restarted, this function will handle incomplete resets
  */
 async function resetIncompleteScoreLevels () {
   // find records where scoreLevel doesn't equal ('' and 'queued') and scoreResetTime doesn't equal null
-  const existRecords = await Leaderboard.find({
-    $and: [
-      { $and: [{ scoreLevel: { $ne: '' } }, { scoreLevel: { $ne: 'queued' } }] },
-      { scoreResetTime: { $ne: null } }
-    ]
-  })
+  const existRecords = await Leaderboard.scan()
+    .where('scoreLevel').not().eq('')
+    .and().where('scoreLevel').not().eq('queued')
+    .and().filter('scoreResetTime').exists()
+    .all().exec()
   _.forEach(existRecords, (record) => {
     const currentTime = Date.now()
     // if reset time already passed, reset immediately
@@ -153,14 +160,14 @@ async function resetIncompleteScoreLevels () {
 
 /**
  * Resets the scoreLevel back to an empty string
- * Resets the scoreResetTime to null
+ * Delete the scoreResetTime(by setting its value to undefined)
  *
- * @param {Object} record Mongoose record
+ * @param {Object} record Dynamoose record
  */
-async function resetScoreLevel (record) {
+function resetScoreLevel (record) {
   _.assignIn(record, {
     scoreLevel: '',
-    scoreResetTime: null
+    scoreResetTime: undefined
   })
   record.save()
   const timerKey = `${record.challengeId}:${record.memberId}`
@@ -169,7 +176,7 @@ async function resetScoreLevel (record) {
 
 /**
  * Resets the scoreLevel back to an empty string
- * Resets the scoreResetTime to null
+ * Delete the scoreResetTime(by setting its value to undefined)
  *
  * @param {String} challengeId the challenge id
  * @param {String} memberId the member id
@@ -197,7 +204,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
 
   let scoreLevel = ''
   // when the score should be reset - incomplete timers will be reloaded on restart
-  let scoreResetTime = null
+  let scoreResetTime
 
   const { testsPassed, totalTestCases } = calculateResult(review)
 
@@ -208,7 +215,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
       finalDetails: {
         aggregateScore: review.aggregateScore,
         testsPassed,
-        totalTestCases,  
+        totalTestCases
       }
     })
   } else {
@@ -220,7 +227,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
         scoreLevel = 'up'
         scoreLevelChanged = true
       }
-  
+
       if (scoreLevelChanged) {
         const timerKey = `${challengeId}:${memberId}`
         // if we got a new review for the same challengeId:memberId, reset the timer
@@ -232,7 +239,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
     } else {
       scoreLevel = 'queued'
     }
-  
+
     _.assignIn(existRecords[0], {
       aggregateScore: review.score,
       reviewId: review.id,
@@ -243,8 +250,15 @@ async function updateLeaderboard (challengeId, memberId, review) {
       status: review.status
     })
   }
-  
-  return existRecords[0].save()
+
+  const dbEntity = await existRecords[0].save()
+  try {
+    await helper.publishMessage('update', 'leaderboard', existRecords[0])
+  } catch (err) {
+    logger.logFullError(err)
+  }
+
+  return dbEntity
 }
 
 updateLeaderboard.schema = {
@@ -271,12 +285,13 @@ async function searchLeaderboards (filter) {
     return getLeaderboard(filter.challengeId, filter.memberId)
   }
   if (filter.challengeId) {
-    return Leaderboard.find({ challengeId: filter.challengeId })
-      .sort({ aggregateScore: -1 })
-      .skip((filter.page - 1) * filter.perPage)
-      .limit(filter.perPage)
+    const result = await Leaderboard.query({ challengeId: filter.challengeId }).all().exec()
+    return _.orderBy(result, ['aggregateScore'], ['desc']).slice(
+      (filter.page - 1) * filter.perPage,
+      filter.perPage * filter.page
+    )
   } else if (filter.groupId) {
-    const leaderboards = await Leaderboard.find({ groupIds: filter.groupId })
+    const leaderboards = await Leaderboard.scan({ groupIds: { contains: filter.groupId } }).all().exec()
     const map = new Map()
     _.each(leaderboards, e => {
       if (!map.has(e.memberId)) {
@@ -306,7 +321,7 @@ async function searchLeaderboards (filter) {
 
 searchLeaderboards.schema = {
   filter: joi.object().keys({
-    challengeId: joi.alternatives().try(joi.id(), joi.string().uuid()),
+    challengeId: joi.alternatives().try(joi.string(), joi.string().uuid()),
     memberId: joi.string(),
     groupId: joi.string(),
     page: joi.page(),
@@ -320,11 +335,17 @@ searchLeaderboards.schema = {
  * @param {String} reviewId the review id
  */
 async function deleteLeaderboard (reviewId) {
-  const entity = await Leaderboard.findOne({ reviewId })
+  const [entity] = await Leaderboard.query({ reviewId }).exec()
   if (!entity) {
     throw new errors.NotFoundError(`Leaderboard record with review id: ${reviewId} doesn't exist`)
   }
-  await entity.remove()
+  await Leaderboard.delete(entity)
+
+  try {
+    await helper.publishMessage('delete', 'leaderboard', { reviewId })
+  } catch (err) {
+    logger.logFullError(err)
+  }
 }
 
 deleteLeaderboard.schema = {

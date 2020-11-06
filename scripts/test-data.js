@@ -1,9 +1,9 @@
 /**
  * Insert test data.
  */
-require('./bootstrap')
-const { Leaderboard } = require('./models')
-const logger = require('./common/logger')
+require('../src/bootstrap')
+const { Leaderboard, Group } = require('../src/models')
+const logger = require('../src/common/logger')
 
 const insertData = async () => {
   await Leaderboard.create({
@@ -83,6 +83,11 @@ const insertData = async () => {
     totalTestCases: 6,
     groupIds: ['100']
   })
+  for (const groupId of ['202343', '20000000', '100', '200']) {
+    await Group.create({
+      groupId
+    })
+  }
 }
 
 if (!module.parent) {
