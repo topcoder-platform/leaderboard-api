@@ -130,7 +130,7 @@ createLeaderboard.schema = {
   review: joi.object().keys({
     id: joi.string().required(),
     submissionId: joi.string().required(),
-    score: joi.number().required()
+    score: joi.number().required().allow(null)
   }).unknown(true).required()
 }
 
@@ -266,7 +266,7 @@ updateLeaderboard.schema = {
   memberId: joi.string().required(),
   review: joi.object().keys({
     id: joi.string().required(),
-    score: joi.number().required()
+    score: joi.number().required().allow(null)
   }).unknown(true).required()
 }
 
