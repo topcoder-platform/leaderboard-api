@@ -32,7 +32,8 @@ async function getLeaderboard (challengeId, memberId) {
 function getTestsPassed (metadata) {
   const tests = metadata.tests || { total: 0, pending: 0, failed: 0 }
 
-  let testsPassed = tests.total - tests.pending - tests.failed
+  // MM scorer has passed tests count in the review already. Use it directly if it exists
+  let testsPassed = tests.passed ? tests.passed : (tests.total - tests.pending - tests.failed)
 
   if (!testsPassed) {
     testsPassed = 0
