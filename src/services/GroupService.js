@@ -22,14 +22,20 @@ async function searchGroups () {
  * @returns {Object} the created group
  */
 async function createGroup (groupId) {
-  const entity = await Group.get(groupId)
+  let entity = await Group.get(groupId)
   if (entity) {
     throw new errors.ConflictError(`groupId # ${groupId} already exists.`)
   }
 
-  const dbEntity = await Group.create({ groupId })
+  entity = {
+    groupId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+
+  const dbEntity = await Group.create(entity)
   try {
-    await helper.publishMessage('create', 'group', { groupId })
+    await helper.publishMessage('create', 'group', entity)
   } catch (err) {
     logger.logFullError(err)
   }

@@ -111,7 +111,9 @@ async function createLeaderboard (challengeId, memberId, review) {
     testsPassed,
     totalTestCases,
     scoreLevel,
-    groupIds: _.map(groupIds, e => String(e))
+    groupIds: _.map(groupIds, e => String(e)),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 
   const dbEntity = await Leaderboard.create(record)
@@ -250,6 +252,12 @@ async function updateLeaderboard (challengeId, memberId, review) {
       status: review.status
     })
   }
+
+  if (!existRecords[0].createdAt) {
+    existRecords[0].createdAt = new Date().toISOString()
+  }
+
+  existRecords[0].updatedAt = new Date().toISOString()
 
   const dbEntity = await existRecords[0].save()
   try {

@@ -11,6 +11,14 @@ const GroupSchema = new Schema({
   groupId: {
     type: String,
     hashKey: true
+  },
+  createdAt: {
+    type: String,
+    required: true
+  },
+  updatedAt: {
+    type: String,
+    required: true
   }
 }, {
   throughput: {

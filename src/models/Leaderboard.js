@@ -32,7 +32,15 @@ const LeaderboardSchema = new Schema({
     schema: [String]
   },
   status: { type: String },
-  finalDetails: { type: Object }
+  finalDetails: { type: Object },
+  createdAt: {
+    type: String,
+    required: true
+  },
+  updatedAt: {
+    type: String,
+    required: true
+  }
 }, {
   throughput: {
     read: Number(config.AMAZON.DYNAMODB_READ_CAPACITY_UNITS),
