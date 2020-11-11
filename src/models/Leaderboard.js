@@ -32,7 +32,14 @@ const LeaderboardSchema = new Schema({
     schema: [String]
   },
   status: { type: String },
-  finalDetails: { type: Object },
+  finalDetails: {
+    type: Object,
+    schema: {
+      aggregateScore: Number,
+      testsPassed: Number,
+      totalTestCases: Number
+    }
+  },
   createdAt: {
     type: String,
     required: true

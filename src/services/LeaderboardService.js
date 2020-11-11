@@ -214,6 +214,10 @@ async function updateLeaderboard (challengeId, memberId, review) {
   let scoreLevelChanged = false
 
   if (review.resource === 'reviewSummation') {
+    console.log('Updating leaderboard using review summation')
+    if (!review.aggregateScore) {
+      throw Error('Aggregate score is needed for the review summation')
+    }
     _.assignIn(existRecords[0], {
       finalDetails: {
         aggregateScore: review.aggregateScore,
@@ -222,6 +226,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
       }
     })
   } else {
+    console.log('Updating leaderboard using review')
     if (review.status !== 'queued') {
       if (existRecords[0].aggregateScore > review.score) {
         scoreLevel = 'down'
@@ -275,7 +280,8 @@ updateLeaderboard.schema = {
   memberId: joi.string().required(),
   review: joi.object().keys({
     id: joi.string().required(),
-    score: joi.number().required().allow(null)
+    score: joi.number().allow(null),
+    aggregateScore: joi.number()
   }).unknown(true).required()
 }
 
