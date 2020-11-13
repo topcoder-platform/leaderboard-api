@@ -215,12 +215,10 @@ async function updateLeaderboard (challengeId, memberId, review) {
 
   if (review.resource === 'reviewSummation') {
     console.log('Updating leaderboard using review summation')
-    if (!review.aggregateScore) {
-      throw Error('Aggregate score is needed for the review summation')
-    }
+    
     _.assignIn(existRecords[0], {
       finalDetails: {
-        aggregateScore: review.aggregateScore,
+        aggregateScore: review.aggregateScore?review.aggregateScore:0,
         testsPassed,
         totalTestCases
       }
