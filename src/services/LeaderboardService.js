@@ -249,6 +249,10 @@ async function updateLeaderboard (challengeId, memberId, review) {
     }
 
     _.assignIn(existRecords[0], {
+      finalDetails: {
+        testsPassed,
+        totalTestCases
+      },
       aggregateScore: review.score,
       reviewId: review.id,
       testsPassed,
