@@ -253,7 +253,7 @@ async function updateLeaderboard (challengeId, memberId, review) {
         testsPassed,
         totalTestCases
       },
-      aggregateScore: review.score,
+      aggregateScore: review.score?review.score:0,
       reviewId: review.id,
       testsPassed,
       totalTestCases,
