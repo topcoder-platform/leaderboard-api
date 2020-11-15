@@ -133,7 +133,6 @@ createLeaderboard.schema = {
   review: joi.object().keys({
     id: joi.string().required(),
     submissionId: joi.string().required(),
-    score: joi.number().required().allow(null)
   }).unknown(true).required()
 }
 
