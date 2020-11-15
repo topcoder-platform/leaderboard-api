@@ -107,7 +107,7 @@ async function createLeaderboard (challengeId, memberId, review) {
     memberId,
     challengeId,
     handle: member.handle,
-    aggregateScore: review.score, // For TCO scenario, we will only have 1 review - per member and per challenge
+    aggregateScore: review.score?review.score:0, // For TCO scenario, we will only have 1 review - per member and per challenge
     status: review.status,
     testsPassed,
     totalTestCases,
@@ -133,7 +133,6 @@ createLeaderboard.schema = {
   review: joi.object().keys({
     id: joi.string().required(),
     submissionId: joi.string().required(),
-    score: joi.number().required().allow(null)
   }).unknown(true).required()
 }
 
@@ -215,12 +214,14 @@ async function updateLeaderboard (challengeId, memberId, review) {
 
   if (review.resource === 'reviewSummation') {
     console.log('Updating leaderboard using review summation')
-    if (!review.aggregateScore) {
-      throw Error('Aggregate score is needed for the review summation')
-    }
+    let aggregateScore = review.aggregateScore?review.aggregateScore:0
+    
     _.assignIn(existRecords[0], {
+      aggregateScore,
+      testsPassed,
+      totalTestCases,
       finalDetails: {
-        aggregateScore: review.aggregateScore,
+        aggregateScore,
         testsPassed,
         totalTestCases
       }
@@ -249,7 +250,11 @@ async function updateLeaderboard (challengeId, memberId, review) {
     }
 
     _.assignIn(existRecords[0], {
-      aggregateScore: review.score,
+      finalDetails: {
+        testsPassed,
+        totalTestCases
+      },
+      aggregateScore: review.score?review.score:0,
       reviewId: review.id,
       testsPassed,
       totalTestCases,
