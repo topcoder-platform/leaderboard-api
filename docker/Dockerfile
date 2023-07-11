@@ -1,5 +1,5 @@
 # Use the base image with Node.js
-FROM node:latest
+FROM node:16.20.1-buster
 
 # Copy the current directory into the Docker image
 COPY . /leaderboard-api
